@@ -20,7 +20,13 @@ from app import views
 
 urlpatterns = [
     path('', views.index, name='index'),
-    path('search', views.search, name='search'),
+    path('market/', views.market, name='market'),
+    path('marketlogin/', views.marketlogin, name='marketlogin'),
+    path('marketregister/', views.marketregister, name='marketregister'),
+    path('registervehicle/', views.registervehicle, name='registervehicle'),
+    path('register/', views.register, name='register'),
+
+    path('search/', views.search, name='search'),
     path('manufacture/', views.manufacture, name='manufacture'),
     path('manufacture/record/', views.manufacture_record, name='manufacture_record'),
     path('manufacture/success/', views.manufacture_success, name='manufacture_success'),

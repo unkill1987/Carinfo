@@ -1,10 +1,10 @@
+from django.core.paginator import Paginator
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
 import requests
-from tkinter.messagebox import showerror, showinfo
-from tkinter import *
-# Create your views here.
-from app.models import Manufacture, Government, Repairshop, Insurance
+from django.utils import timezone
+
+from app.models import Manufacture, Government, Repairshop, Insurance, Sellcar, Market
 from carinfo import settings
 
 def search(request):
@@ -24,6 +24,108 @@ def search(request):
 
 def index(request):
     return render(request, 'app/index.html', {})
+
+def market(request):
+    try:
+        user_id = request.session['user_id']
+        name = request.session['name']
+        templates = ''
+        if (len(name) == 0):
+            templates = 'app/marketlogin.html'
+
+        else:
+            templates = 'app/market.html'
+            sellcars = Sellcar.objects.all().order_by('-id')
+            n = len(sellcars)
+            paginator = Paginator(sellcars, 10)
+            page = request.GET.get('page')
+            allcars = paginator.get_page(page)
+
+        return render(request, templates, {'allcars': allcars, 'n': n,'uesr_id':user_id})
+
+    except Exception as e:
+        print(e)
+        return redirect('marketlogin')
+
+def marketlogin(request):
+    if request.method == 'GET':
+        return render(request, 'app/marketlogin.html', {})
+    else:
+        user_id = request.POST.get('user_id', False)
+        passwd = request.POST.get('passwd', False)
+
+        result_dict = {}
+        try:
+            Market.objects.get(user_id=user_id, passwd=passwd)
+            name = Market.objects.filter(user_id=user_id).values('name')[0]['name']
+            result_dict['result'] = 'success'
+            request.session['user_id'] = user_id
+            request.session['name'] = name
+
+        except Market.DoesNotExist:
+            result_dict['result'] = 'fail'
+        return JsonResponse(result_dict)
+
+def marketregister(request):
+    if request.method == 'GET':
+        return render(request, 'app/marketregister.html', {})
+    else:
+        result_dict={}
+
+        Name = request.POST['name']
+        Address = request.POST['address']
+        User_id = request.POST['user_id']
+        PW = request.POST['passwd']
+        CPW = request.POST['confirm']
+
+        if PW != CPW:
+            result_dict['result'] = 'Password does not match'
+            return JsonResponse(result_dict)
+        else:
+            try:
+                Market.objects.get(user_id=User_id)
+                result_dict['result'] = 'ID cannot be used'
+            except Market.DoesNotExist:
+                market = Market(name=Name, address=Address, user_id=User_id, passwd=PW, passconfirm=CPW )
+                market.c_date = timezone.now()
+                market.save()
+                result_dict['result'] = 'success'
+            return JsonResponse(result_dict)
+
+def registervehicle(request):
+    return render(request, 'app/registervehicle.html',{})
+
+
+def register(request):
+    try:
+        user_id=request.session['user_id']
+        sn = request.POST['sn']
+        url = ("http://localhost:8001/history/%s" % sn)
+        res = requests.get(url)
+        history = res.json()
+        init = history[0]
+        print(init)
+        Time = init['Timestamp']
+        Model = init['Value']['name']
+        Company = init['Value']['manufacture']
+        Type = init['Value']['vehicletype']
+        Volume = init['Value']['volume']
+        Fuel = init['Value']['fuel']
+        Sellprice = request.POST['sellprice']
+        Details = request.POST['details']
+        result_dict = {}
+        try:
+            sellcar = Sellcar(serialnumber=sn, company=Company, modelname=Model, type=Type, volume=Volume, fuel=Fuel, owner=user_id, whentobuy=Time, sellprice=Sellprice, details=Details)
+            sellcar.save()
+            result_dict['result'] = 'success'
+            return JsonResponse(result_dict)
+        except:
+            result_dict['result'] = 'fail'
+            return JsonResponse(result_dict)
+    except Exception as e:
+        print(e)
+        return render(request, 'app/market.html',{})
+
 
 
 
@@ -279,6 +381,12 @@ def logout(request):
         try:
             if len(str(request.session['company'])) != 0:
                 del request.session['company']
+                del request.session['user_id']
+        except:
+            pass
+        try:
+            if len(str(request.session['name'])) != 0:
+                del request.session['name']
                 del request.session['user_id']
         except:
             pass

@@ -36,7 +36,7 @@
       <div class="container">
         <img  id = "white" style="width:2.5%;" src="{% static 'app/img/vehicle.png'%}">
         <img  id = "black" style="width:30px;" src="{% static 'app/img/vehicle-black.png'%}">
-        <a class="navbar-brand" style="padding-left:0px;">VEHICLE HISTORY</a>
+        <a href="{% url 'index'%}" class="navbar-brand" style="padding-left:0px;">VEHICLE HISTORY</a>
         <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
           Menu
           <i class="fas fa-bars"></i>
@@ -44,7 +44,7 @@
         <div class="collapse navbar-collapse" id="navbarResponsive">
           <ul class="navbar-nav ml-auto">
             <li class="nav-item">
-              <a class="nav-link" href="{% url 'index' %}">Home</a>
+              <a class="nav-link" href="{% url 'market' %}">Market</a>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="{% url 'manufacture_record' %}">Manufacture</a>
@@ -83,7 +83,7 @@
 
     <!-- Main Content -->
     <div class="container">
-     <form role="form" action="{% url 'search' %}" method="post">
+     <form method="post" action ="{% url 'search'%}">
       <div class="row">
         <div class="col-lg-10 col-md-10 mx-auto">
           <div class ="input-group">
