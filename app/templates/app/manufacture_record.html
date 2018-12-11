@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+
+  <head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>VEHICLE HISTORY</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="{% static 'app/vendor/bootstrap/css/bootstrap.min.css'%}" rel="stylesheet">
+
+    <!-- Custom fonts for this template -->
+    <link href="{% static 'app/vendor/fontawesome-free/css/all.min.css'%}" rel="stylesheet" type="text/css">
+    <link href='https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
+
+    <!-- Custom styles for this template -->
+    <link href="{% static 'app/css/clean-blog.min.css'%}" rel="stylesheet">
+
+  </head>
+<style>
+  @media (max-width:768px){ #white{display:none!important;}}
+  @media (min-width:992px){ #black{display:none!important;}}
+  label{width:140px;border-top-left-radius:5px;border-bottom-left-radius:5px;}
+</style>
+  <body>
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
+      <div class="container">
+        <img  id = "white" style="width:2.5%;" src="{% static 'app/img/vehicle.png'%}">
+        <img  id = "black" style="width:30px;" src="{% static 'app/img/vehicle-black.png'%}">
+        <a class="navbar-brand" style="padding-left:0px;">VEHICLE HISTORY</a>
+        <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+          Menu
+          <i class="fas fa-bars"></i>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarResponsive">
+          <ul class="navbar-nav ml-auto">
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'index' %}">Home</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'manufacture_record' %}">Manufacture</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'government_record' %}">Government</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'repairshop_record' %}">Repairshop</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'insurance_record' %}">Insuarance</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'logout' %}">Logout</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Page Header -->
+    <header class="masthead" style="background-image: url('../../../static/app/img/manufacture.jpg');background-size:cover; background-repeat:no-repeat;">
+      <div class="overlay"></div>
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-8 col-md-10 mx-auto">
+            <div class="site-heading">
+              <h1>Record a New Car</h1>
+              <span class="subheading" style="font-size:40px;">From Your Factory</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+  <form role="form" action="{% url 'recordcarinfo' %}" method="post">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto">
+        <h1>Record New Car</h1>
+      </div>
+      </div>
+      <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto">
+          <div class ="input-group">
+            <label class="input-group-text">SN</label>
+            <input class="form-control" name = "sn" type="text">
+
+          </div>
+        </div>
+      </div>
+      <div style="font-size:5px">&nbsp</div>
+
+      <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto">
+          <div class ="input-group">
+            <label class="input-group-text">Factory</label>
+            <input class="form-control" name = "factory" type="text">
+
+          </div>
+        </div>
+      </div>
+      <div style="font-size:5px">&nbsp</div>
+
+      <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto">
+          <div class ="input-group">
+            <label class="input-group-text">Name</label>
+            <input class="form-control" name = "name" type="text">
+
+          </div>
+        </div>
+      </div>
+      <div style="font-size:5px">&nbsp</div>
+            <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto">
+          <div class ="input-group">
+            <label class="input-group-text">Type</label>
+            <input class="form-control" name = "type" type="text">
+
+          </div>
+        </div>
+      </div>
+      <div style="font-size:5px">&nbsp</div>
+            <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto">
+          <div class ="input-group">
+            <label class="input-group-text">Volume</label>
+            <input class="form-control" name = "volume" type="text">
+
+          </div>
+        </div>
+      </div>
+      <div style="font-size:5px">&nbsp</div>
+      <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto">
+          <div class ="input-group">
+            <label class="input-group-text">Fuel</label>
+            <input class="form-control"  type="text" name="fuel">
+
+          </div>
+          <hr>
+        </div>
+      </div>
+      <div class="col-lg-4 col-md-10 mx-auto">
+        <button id="record" class="btn btn-outline-dark btn-block" style="padding:10px">Record</button>
+      </div>
+    </div>
+    {% csrf_token %}
+    </form>
+
+
+    <hr>
+
+    <!-- Footer -->
+    <footer>
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-8 col-md-10 mx-auto">
+
+            <p class="copyright text-muted">Copyright &copy; VEHICLE HISTORY 2018</p>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <!-- Bootstrap core JavaScript -->
+    <script src="{% static 'app/vendor/jquery/jquery.min.js'%}"></script>
+    <script src="{% static 'app/vendor/bootstrap/js/bootstrap.bundle.min.js'%}"></script>
+
+    <!-- Custom scripts for this template -->
+    <script src="{% static 'app/js/clean-blog.min.js'%}"></script>
+
+  </body>
+<script>
+   $('#record').click(function(){
+    $.ajax({
+      url:'/app/recordcarinfo/',
+      type:'post',
+      data:$('form').serialize(),
+      success: function(res){
+
+        if(res.result == 'success'){
+          alert(res.result)
+          location = '/app/manufacture/record'
+
+        }else{
+          alert(res.result)
+        }
+       }
+    })
+    return false
+  })
+</script>
+</html>
