@@ -163,7 +163,7 @@ def insurance_record(request):
         user_id = request.session['user_id']
         insurance = request.session['insurance']
         templates = ''
-        print(insurance)
+
         if len(insurance) == 0:
             templates = 'app/insurance.html'
         else:

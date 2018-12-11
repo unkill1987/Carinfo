@@ -81,7 +81,7 @@
     </header>
 
     <!-- Main Content -->
-    <form role="form" action="{% url 'recordcaraccident' %}" method="post">
+    <form role="form" action="{% url 'recordcaraccident' %}" method="post" >
     <div class="container">
       <div class="row">
         <div class="col-lg-8 col-md-10 mx-auto">
@@ -123,7 +123,7 @@
 
 
       <div class="col-lg-4 col-md-10 mx-auto">
-        <button id="record" class="btn btn-outline-dark btn-block" href="" style="padding:10px">Record</button>
+        <button id="record" class="btn btn-outline-dark btn-block" style="padding:10px">Record</button>
       </div>
     </div>
       {% csrf_token %}
@@ -153,7 +153,9 @@
 
   </body>
 <script>
+
    $('#record').click(function(){
+    $('.btn').attr('disabled',true);
     $.ajax({
       url:'/app/recordcaraccident/',
       type:'post',
@@ -166,6 +168,7 @@
 
         }else{
           alert(res.result)
+          location = '/app/insurance/record'
         }
        }
     })

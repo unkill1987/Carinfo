@@ -182,6 +182,7 @@
   </body>
 <script>
    $('#record').click(function(){
+   $('.btn').attr('disabled',true);
     $.ajax({
       url:'/app/recordcarinfo/',
       type:'post',
@@ -194,6 +195,7 @@
 
         }else{
           alert(res.result)
+          location = '/app/manufacture/record'
         }
        }
     })

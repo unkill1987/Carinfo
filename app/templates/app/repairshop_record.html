@@ -154,6 +154,7 @@
   </body>
 <script>
    $('#record').click(function(){
+   $('.btn').attr('disabled',true);
     $.ajax({
       url:'/app/recordcarrepair/',
       type:'post',
@@ -166,6 +167,7 @@
 
         }else{
           alert(res.result)
+          location = '/app/repairshop/record'
         }
        }
     })
