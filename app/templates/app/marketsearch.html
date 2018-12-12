@@ -28,7 +28,12 @@
 <style>
   @media (max-width:768px){ #white{display:none!important;}}
   @media (min-width:992px){ #black{display:none!important;}}
-  label{width:70px;border-top-left-radius:5px;border-bottom-left-radius:5px; border:0px!important;}
+  label{border-top-left-radius:5px;border-bottom-left-radius:5px; border:0px!important; width:80px;}
+  .input-group{padding-left:32%;}
+
+
+
+
 
 </style>
 <body>
@@ -72,14 +77,14 @@
 
 <!-- Page Header -->
 <header class="masthead"
-        style="background-image: url('../../static/app/img/repairshop.jpg');background-size:cover; background-repeat:no-repeat;">
+        style="background-image: url('../../static/app/img/market.jpg');background-size:cover; background-repeat:no-repeat;">
     <div class="overlay"></div>
     <div class="container">
         <div class="row">
-            <div class="col-lg-12 col-md-10 mx-auto">
+            <div class="col-lg-8 col-md-10 mx-auto">
                 <div class="site-heading">
-                    <h1>Record of Maintenance</h1>
-                    <span class="subheading" style="font-size:40px;">Keep vehicle in optimal condition</span>
+                    <h1>Vehicle Market</h1>
+                    <span class="subheading" style="font-size:40px;">Buy and Sell Vehicles</span>
                 </div>
             </div>
         </div>
@@ -87,44 +92,102 @@
 </header>
 
 <!-- Main Content -->
-<form>
-    <div class="container">
+<div class="container">
+    <div class="col-12" style="text-align:center;">
+        <div class="btn-group">
+            <a href="{%url 'market'%}">
+                <button type="button" class="btn btn-outline-dark">All Vehicles</button>
+            </a>
+            <a href="{%url 'mytrade'%}">
+                <button type="button" class="btn btn-outline-dark">My Trade</button>
+            </a>
+            <a href="{%url 'registervehicle'%}">
+                <button type="button" class="btn btn-outline-dark">Register Vehicle</button>
+            </a>
+        </div>
+        <hr>
+        <form method="post" action="{% url 'marketsearch'%}">
         <div class="row">
-            <div class="col-lg-8 col-md-10 mx-auto">
-                <h2>Repairshop Login</h2>
+            <div class="input-group">
+                <label class="input-group-text" for="vehiclesearch">Model</label>
+                <input id="vehiclesearch" name="vehiclesearch" class="formcontrol" type="text" name="vehicleseach">
+                <span class="input-group-append">
+                    <button class="btn btn-outline-dark" type="submit"  id="search">Search</button>
+                </span>
             </div>
         </div>
-        <div class="row">
-            <div class="col-lg-8 col-md-10 mx-auto">
-                <div class="input-group">
-                    <label class="input-group-text">ID</label>
-                    <input class="form-control" id="user_id" name=user_id type="text">
-
-                </div>
-            </div>
-        </div>
-        <div style="font-size:5px">&nbsp</div>
-        <div class="row">
-            <div class="col-lg-8 col-md-10 mx-auto">
-                <div class="input-group">
-                    <label class="input-group-text">PW</label>
-                    <input class="form-control" type="password" name="passwd" id="passwd">
-
-                </div>
-                <hr>
-            </div>
-        </div>
-        <div class="col-lg-4 col-md-10 mx-auto">
-            <button id='login' class="btn btn-outline-dark btn-block" href="" style="padding:10px">Login</button>
-        </div>
+            {% csrf_token%}
+        </form>
+        <hr>
     </div>
-    {% csrf_token %}
-    <hr>
-</form>
 
+
+    {% for car in searchcars%}
+    <div class="row">
+        <div class="col-sm-12">
+            <table class="table" style="text-align:center;">
+                <tr>
+                    <th>S/N</th>
+                    <th>Brand</th>
+                    <th>Model</th>
+                    <th>Type</th>
+                    <th>Date of manufacture</th>
+                    <th>SellPrice</th>
+                    <th>Owner</th>
+                </tr>
+                <tr>
+                    <td>{{car.serialnumber}}</td>
+                    <td>{{car.company}}</td>
+                    <td>{{car.modelname}}</td>
+                    <td>{{car.type}}</td>
+                    <td>{{car.whentobuy}}</td>
+                    <td>{{car.sellprice}}</td>
+                    <td>{{car.owner}}</td>
+                </tr>
+
+            </table>
+            <hr>
+            <div style="text-align:center;">
+                <button id="details" type="button" class="btn btn-outline-dark">Details</button>
+                <button id="buy" type="button" class="btn btn-outline-dark">Buy Now</button>
+            </div>
+            <hr>
+        </div>
+
+    </div>
+    {% endfor %}
+
+
+    <div class="pagination" style="text-align:center; margin:auto;">
+    <span class="step-links" style="text-align:center; margin:auto;">
+      <ul class="pagination pagination-lg">
+        {% if searchcars.has_previous %}
+            <li><a class="btn" style="font-size:20px" href="?page=1">&laquo; first&nbsp</a></li>
+            <li><a class="btn" style="font-size:20px" href="?page={{ contract.previous_page_number }}">previous</a></li>
+        {% endif %}
+
+
+      {% for pg in searchcars.paginator.page_range %}
+        {% if blogs.number == pg %}
+          <li><a style="font-size:20px" href="?page={{pg}}" class="btn btn-default">{{pg}}</a></li>
+        {% else %}
+          <li><a style="font-size:20px" href="?page={{pg}}" class="btn">{{pg}}</a></li>
+        {% endif %}
+      {% endfor %}
+
+
+        {% if searchcars.has_next %}
+            <li><a class="btn" style="font-size:20px" href="?page={{ contract.next_page_number }}">next&nbsp</a></li>
+            <li><a class="btn" style="font-size:20px"
+                   href="?page={{ contract.paginator.num_pages }}">last &raquo;</a></li>
+        {% endif %}
+        </ul>
+    </span>
+    </div>
+
+
+</div>
 <hr>
-
-
 <!-- Footer -->
 <footer>
     <div class="container">
@@ -145,40 +208,5 @@
 <script src="{% static 'app/js/clean-blog.min.js'%}"></script>
 
 </body>
-<script>
-  $('#login').click(function(){
-    $.ajax({
-      url:'/app/repairshop/',
-      type:'post',
-      data:$('form').serialize(),
-      success: function(res){
 
-        if(res.result == 'success'){
-          location = 'record'
-        }else{
-        alert(res.result)
-        }
-       }
-    })
-    return false
-  })
-
-  //엔터로 로그인하기
-var input = document.getElementById("passwd");
-
-// Execute a function when the user releases a key on the keyboard
-input.addEventListener("keyup", function(event) {
-
-// Cancel the default action, if needed
-event.preventDefault();
-
-// Number 13 is the "Enter" key on the keyboard
-if (event.keyCode === 13) {
-
-// Trigger the button element with a click
-document.getElementById("login").click();
-}
-});
-
-</script>
 </html>

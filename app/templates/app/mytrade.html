@@ -2,7 +2,7 @@
 {% load static %}
 <html lang="en">
 
-  <head>
+<head>
 
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -16,17 +16,19 @@
 
     <!-- Custom fonts for this template -->
     <link href="{% static 'app/vendor/fontawesome-free/css/all.min.css'%}" rel="stylesheet" type="text/css">
-    <link href='https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
-    <link href='https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet'
+          type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800'
+          rel='stylesheet' type='text/css'>
 
     <!-- Custom styles for this template -->
     <link href="{% static 'app/css/clean-blog.min.css'%}" rel="stylesheet">
 
-  </head>
+</head>
 <style>
   @media (max-width:768px){ #white{display:none!important;}}
   @media (min-width:992px){ #black{display:none!important;}}
-  label{width:140px;border-top-left-radius:5px;border-bottom-left-radius:5px;}
+  label{width:140px;border-top-left-radius:5px;border-bottom-left-radius:5px; border:0px!important;}
 
  input[type=checkbox] {
     display: none;
@@ -62,109 +64,119 @@ input[type=checkbox]:checked + label:before {
 
 }
 
+
 </style>
-  <body>
+<body>
 
-    <!-- Navigation -->
-    <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
-      <div class="container">
-        <img  id = "white" style="width:2.5%;" src="{% static 'app/img/vehicle.png'%}">
-        <img  id = "black" style="width:30px;" src="{% static 'app/img/vehicle-black.png'%}">
+<!-- Navigation -->
+<nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
+    <div class="container">
+        <img id="white" style="width:2.5%;" src="{% static 'app/img/vehicle.png'%}">
+        <img id="black" style="width:30px;" src="{% static 'app/img/vehicle-black.png'%}">
         <a href="{% url 'index'%}" class="navbar-brand" style="padding-left:0px;">VEHICLE HISTORY</a>
-        <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
-          Menu
-          <i class="fas fa-bars"></i>
+        <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
+                data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
+                aria-label="Toggle navigation">
+            Menu
+            <i class="fas fa-bars"></i>
         </button>
-      <div class="collapse navbar-collapse" id="navbarResponsive">
-          <ul class="navbar-nav ml-auto">
-            <li class="nav-item">
-              <a class="nav-link" href="{% url 'market' %}">Market</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="{% url 'manufacture_record' %}">Manufacture</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="{% url 'government_record' %}">Government</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="{% url 'repairshop_record' %}">Repairshop</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="{% url 'insurance_record' %}">Insuarance</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="{% url 'logout' %}">Logout</a>
-            </li>
-          </ul>
+        <div class="collapse navbar-collapse" id="navbarResponsive">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'market' %}">Market</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'manufacture_record' %}">Manufacture</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'government_record' %}">Government</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'repairshop_record' %}">Repairshop</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'insurance_record' %}">Insuarance</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'logout' %}">Logout</a>
+                </li>
+            </ul>
         </div>
-      </div>
-    </nav>
-
-    <!-- Page Header -->
-    <header class="masthead" style="background-image: url('../../static/app/img/market.jpg');background-size:cover; background-repeat:no-repeat;">
-      <div class="overlay"></div>
-      <div class="container">
-        <div class="row">
-          <div class="col-lg-8 col-md-10 mx-auto">
-            <div class="site-heading">
-              <h1>Vehicle Market</h1>
-              <span class="subheading" style="font-size:40px;">Buy and Sell Vehicles</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </header>
-
-    <!-- Main Content -->
-    <div class ="container">
-    <div class = "col-12" style="text-align:center;">
-     <div class="btn-group" >
-        <a href="{%url 'market'%}"><button type="button" class="btn btn-outline-dark" >Buy Vehicle</button></a>
-        <a href="{%url 'mytrade'%}"><button type="button" class="btn btn-outline-dark" >My Trade</button></a>
-        <a href="{%url 'registervehicle'%}"><button type="button" class="btn btn-outline-dark" >Register Vehicle</button></a>
     </div>
-      <hr>
-      </div>
-      {% for car in mycars%}
-      <div class ="row" >
-        <div class = "col-sm-12">
-      <table  class="table" style="text-align:center;" >
-                <tr>
-                  <th rowspan="2" style="vertical-align: middle; padding:0px;">
-                     <input type="checkbox" id="{{car.id}}" value="{{ car.id }}">
-                     <label for="{{car.id}}" style="margin-right:10px"></label>
-                  </th>
-                  <th>S/N</th>
-                  <th>Brand</th>
-                  <th>Model</th>
-                  <th>Type</th>
-                  <th>Date of manufacture</th>
-                  <th>SellPrice</th>
-                  <th>Owner</th>
-                </tr>
-                <tr>
-                  <td>{{car.serialnumber}}</td>
-                  <td>{{car.company}}</td>
-                  <td>{{car.modelname}}</td>
-                  <td>{{car.type}}</td>
-                  <td>{{car.whentobuy}}</td>
-                  <td>{{car.sellprice}}</td>
-                  <td>{{car.owner}}</td>
-                </tr>
-              </table>
-           <hr>
+</nav>
 
-          </div>
+<!-- Page Header -->
+<header class="masthead"
+        style="background-image: url('../../static/app/img/market.jpg');background-size:cover; background-repeat:no-repeat;">
+    <div class="overlay"></div>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-md-10 mx-auto">
+                <div class="site-heading">
+                    <h1>Vehicle Market</h1>
+                    <span class="subheading" style="font-size:40px;">Buy and Sell Vehicles</span>
+                </div>
+            </div>
         </div>
-      {% endfor %}
-      <div class="col-12" style="text-align:center;">
-      <button id="delete"  type="button" class="btn btn-outline-dark">Delete</button>
-      </div>
- <hr>
+    </div>
+</header>
 
-<div class="pagination" style="text-align:center; margin:auto;">
+<!-- Main Content -->
+<div class="container">
+    <div class="col-12" style="text-align:center;">
+        <div class="btn-group">
+            <a href="{%url 'market'%}">
+                <button type="button" class="btn btn-outline-dark">Market</button>
+            </a>
+            <a href="{%url 'mytrade'%}">
+                <button type="button" class="btn btn-outline-dark">My Trade</button>
+            </a>
+            <a href="{%url 'registervehicle'%}">
+                <button type="button" class="btn btn-outline-dark">Register Vehicle</button>
+            </a>
+        </div>
+        <hr>
+    </div>
+    {% for car in mycars%}
+    <div class="row">
+        <div class="col-sm-12">
+            <table class="table" style="text-align:center;">
+                <tr>
+                    <th rowspan="2" style="vertical-align: middle; padding:0px;">
+                        <input type="checkbox" id="{{car.id}}" value="{{ car.id }}">
+                        <label for="{{car.id}}" style="margin-right:10px"></label>
+                    </th>
+                    <th>S/N</th>
+                    <th>Brand</th>
+                    <th>Model</th>
+                    <th>Type</th>
+                    <th>Date of manufacture</th>
+                    <th>SellPrice</th>
+                    <th>Owner</th>
+                </tr>
+                <tr>
+                    <td>{{car.serialnumber}}</td>
+                    <td>{{car.company}}</td>
+                    <td>{{car.modelname}}</td>
+                    <td>{{car.type}}</td>
+                    <td>{{car.whentobuy}}</td>
+                    <td>{{car.sellprice}}</td>
+                    <td>{{car.owner}}</td>
+                </tr>
+            </table>
+            <hr>
+
+        </div>
+    </div>
+    {% endfor %}
+    <div class="col-12" style="text-align:center;">
+        <button id="delete" type="button" class="btn btn-outline-dark">Delete</button>
+    </div>
+    <hr>
+
+    <div class="pagination" style="text-align:center; margin:auto;">
     <span class="step-links" style="text-align:center; margin:auto;">
-      <ul class="pagination pagination-lg" >
+      <ul class="pagination pagination-lg">
         {% if mycars.has_previous %}
             <li><a class="btn" style="font-size:20px" href="?page=1">&laquo; first&nbsp</a></li>
             <li><a class="btn" style="font-size:20px" href="?page={{ contract.previous_page_number }}">previous</a></li>
@@ -182,39 +194,40 @@ input[type=checkbox]:checked + label:before {
 
         {% if mycars.has_next %}
             <li><a class="btn" style="font-size:20px" href="?page={{ contract.next_page_number }}">next&nbsp</a></li>
-            <li><a class="btn" style="font-size:20px" href="?page={{ contract.paginator.num_pages }}">last &raquo;</a></li>
+            <li><a class="btn" style="font-size:20px"
+                   href="?page={{ contract.paginator.num_pages }}">last &raquo;</a></li>
         {% endif %}
         </ul>
     </span>
-  </div>
+    </div>
+
+    <hr>
+</div>
+
 
 <hr>
-      </div>
-
-
- <hr>
-    <!-- Footer -->
-    <footer>
-      <div class="container">
+<!-- Footer -->
+<footer>
+    <div class="container">
         <div class="row">
-          <div class="col-lg-8 col-md-10 mx-auto">
+            <div class="col-lg-8 col-md-10 mx-auto">
 
-            <p class="copyright text-muted">Copyright &copy; VEHICLE HISTORY 2018</p>
-          </div>
+                <p class="copyright text-muted">Copyright &copy; VEHICLE HISTORY 2018</p>
+            </div>
         </div>
-      </div>
-    </footer>
+    </div>
+</footer>
 
-    <!-- Bootstrap core JavaScript -->
-    <script src="{% static 'app/vendor/jquery/jquery.min.js'%}"></script>
-    <script src="{% static 'app/vendor/bootstrap/js/bootstrap.bundle.min.js'%}"></script>
+<!-- Bootstrap core JavaScript -->
+<script src="{% static 'app/vendor/jquery/jquery.min.js'%}"></script>
+<script src="{% static 'app/vendor/bootstrap/js/bootstrap.bundle.min.js'%}"></script>
 
-    <!-- Custom scripts for this template -->
-    <script src="{% static 'app/js/clean-blog.min.js'%}"></script>
+<!-- Custom scripts for this template -->
+<script src="{% static 'app/js/clean-blog.min.js'%}"></script>
 
-  </body>
+</body>
 
- <script>
+<script>
       $('#delete').click(function() {
         check_ids = ''
         sep = ''
@@ -226,5 +239,6 @@ input[type=checkbox]:checked + label:before {
         location = '/app/remove?check_id=' + check_ids
         return false
       })
+
 </script>
 </html>

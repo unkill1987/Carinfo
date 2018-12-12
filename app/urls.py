@@ -23,6 +23,7 @@ urlpatterns = [
     path('search/', views.search, name='search'),
 
     path('market/', views.market, name='market'),
+    path('marketsearch/', views.marketsearch, name='marketsearch'),
     path('marketlogin/', views.marketlogin, name='marketlogin'),
     path('marketregister/', views.marketregister, name='marketregister'),
     path('registervehicle/', views.registervehicle, name='registervehicle'),
@@ -32,7 +33,6 @@ urlpatterns = [
 
     path('manufacture/', views.manufacture, name='manufacture'),
     path('manufacture/record/', views.manufacture_record, name='manufacture_record'),
-    path('manufacture/success/', views.manufacture_success, name='manufacture_success'),
     path('recordcarinfo/',views.recordcarinfo, name='recordcarinfo'),
 
     path('government/', views.government, name='government'),
@@ -47,5 +47,6 @@ urlpatterns = [
     path('insurance/', views.insurance ,name='insurance'),
     path('insurance/record/', views.insurance_record, name='insurance_record'),
     path('recordcaraccident/',views.recordcaraccident, name='recordcaraccident'),
+
     path('logout/', views.logout, name='logout'),
 ]

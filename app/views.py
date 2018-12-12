@@ -1,11 +1,29 @@
+import os
+
 from django.core.paginator import Paginator
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from django.shortcuts import render, redirect
 import requests
 from django.utils import timezone
 
 from app.models import Manufacture, Government, Repairshop, Insurance, Sellcar, Market
 from carinfo import settings
+
+def marketsearch(request):
+    try:
+        search = request.POST['vehiclesearch']
+
+        sellcar = Sellcar.objects.filter(modelname=search).order_by('-id')
+        n = len(sellcar)
+        paginator = Paginator(sellcar, 10)
+        page = request.GET.get('page')
+        searchcars = paginator.get_page(page)
+
+        return render(request, 'app/marketsearch.html', {'searchcars': searchcars, 'n': n})
+
+    except Exception as e:
+        print(e)
+        return redirect('marketlogin')
 
 def search(request):
     try:
@@ -93,7 +111,8 @@ def marketregister(request):
             return JsonResponse(result_dict)
 
 def registervehicle(request):
-    return render(request, 'app/registervehicle.html',{})
+   return render(request, 'app/registervehicle.html',{})
+
 def mytrade(request):
     try:
         user_id = request.session['user_id']
@@ -117,8 +136,7 @@ def mytrade(request):
         return redirect('marketlogin')
 
 def remove(request):
-    # deletes all objects from Car database table
-    # Contract.objects.get('id').delete()
+
     check_id = request.GET['check_id']
     check_ids = check_id.split(',')
 
@@ -182,8 +200,6 @@ def register(request):
         return render(request, 'app/market.html',{})
 
 
-
-
 def manufacture(request):
     if request.method == 'GET':
         return render(request, 'app/manufacture.html', {})
@@ -217,10 +233,6 @@ def manufacture_record(request):
         return render(request, templates, {'user_id': user_id})
     except:
         return redirect('manufacture')
-
-
-def manufacture_success(request):
-    return render(request, 'app/manufacture_success.html', {})
 
 
 def government(request):
