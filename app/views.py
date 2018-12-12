@@ -9,6 +9,24 @@ from django.utils import timezone
 from app.models import Manufacture, Government, Repairshop, Insurance, Sellcar, Market
 from carinfo import settings
 
+def marketdetails(request):
+    try:
+
+        sn = request.POST['serial']
+        print(sn)
+        url = ("http://localhost:8001/history/%s" % sn)
+        res = requests.get(url)
+        history = res.json()
+        init = history[0]
+        history.pop(0)
+        history.reverse()
+
+        return render(request, 'app/marketdetails.html',{'history':history, 'init':init})
+    except Exception as e:
+        print(e)
+        return redirect('market')
+
+
 def marketsearch(request):
     try:
         search = request.POST['vehiclesearch']
@@ -35,7 +53,7 @@ def search(request):
         history.pop(0)
         history.reverse()
 
-        return render(request, 'app/search.html', {'history':history, 'init':init})
+        return render(request, 'app/search.html', {'sn':sn,'history':history, 'init':init})
     except Exception as e:
         print(e)
         return redirect('index')

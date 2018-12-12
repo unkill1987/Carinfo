@@ -26,6 +26,7 @@ urlpatterns = [
     path('marketsearch/', views.marketsearch, name='marketsearch'),
     path('marketlogin/', views.marketlogin, name='marketlogin'),
     path('marketregister/', views.marketregister, name='marketregister'),
+    path('marketdetails/', views.marketdetails, name='marketdetails'),
     path('registervehicle/', views.registervehicle, name='registervehicle'),
     path('register/', views.register, name='register'),
     path('mytrade/', views.mytrade, name='mytrade'),
