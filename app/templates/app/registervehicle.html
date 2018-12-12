@@ -129,10 +129,11 @@
       </div>
     </div>
       {% csrf_token %}
+      <hr>
     </form>
 
 
-    <hr>
+
 
     <!-- Footer -->
     <footer>
@@ -168,7 +169,7 @@
           location = '/app/market'
 
         }else{
-          alert('fail')
+          alert(res.result)
           location = '/app/market'
         }
        }

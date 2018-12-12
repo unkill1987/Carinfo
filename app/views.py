@@ -94,17 +94,51 @@ def marketregister(request):
 
 def registervehicle(request):
     return render(request, 'app/registervehicle.html',{})
+def mytrade(request):
+    try:
+        user_id = request.session['user_id']
+        name = request.session['name']
+        templates = ''
+        if (len(name) == 0):
+            templates = 'app/marketlogin.html'
+
+        else:
+            templates = 'app/mytrade.html'
+            sellcars = Sellcar.objects.filter(owner=user_id).order_by('-id')
+            n = len(sellcars)
+            paginator = Paginator(sellcars, 10)
+            page = request.GET.get('page')
+            mycars = paginator.get_page(page)
+
+        return render(request, templates, {'mycars': mycars, 'n': n,'uesr_id':user_id})
+
+    except Exception as e:
+        print(e)
+        return redirect('marketlogin')
+
+def remove(request):
+    # deletes all objects from Car database table
+    # Contract.objects.get('id').delete()
+    check_id = request.GET['check_id']
+    check_ids = check_id.split(',')
+
+    for id in check_ids:
+        try:
+            Sellcar.objects.get(id=id).delete()
+        except:
+            pass
+    return redirect('mytrade')
 
 
 def register(request):
     try:
         user_id=request.session['user_id']
+        user_name = request.session['name']
         sn = request.POST['sn']
         url = ("http://localhost:8001/history/%s" % sn)
         res = requests.get(url)
         history = res.json()
         init = history[0]
-        print(init)
         Time = init['Timestamp']
         Model = init['Value']['name']
         Company = init['Value']['manufacture']
@@ -113,14 +147,35 @@ def register(request):
         Fuel = init['Value']['fuel']
         Sellprice = request.POST['sellprice']
         Details = request.POST['details']
+        currentowner = []
+
+        for i in range(0,len(history)):
+            owner = history[i]['Value']['owner']
+            if owner == '':
+                pass
+            else:
+                currentowner.append(owner)
+                set(currentowner)
+                seller=currentowner[-1]
+        serial = []
+
+        for i in Sellcar.objects.all():
+            num=i.serialnumber
+            serial.append(num)
+
         result_dict = {}
         try:
-            sellcar = Sellcar(serialnumber=sn, company=Company, modelname=Model, type=Type, volume=Volume, fuel=Fuel, owner=user_id, whentobuy=Time, sellprice=Sellprice, details=Details)
-            sellcar.save()
-            result_dict['result'] = 'success'
-            return JsonResponse(result_dict)
-        except:
-            result_dict['result'] = 'fail'
+            if  sn not in serial and seller == user_name:
+                sellcar = Sellcar(serialnumber=sn, company=Company, modelname=Model, type=Type, volume=Volume, fuel=Fuel, owner=user_id, whentobuy=Time, sellprice=Sellprice, details=Details)
+                sellcar.save()
+                result_dict['result'] = 'Success'
+                return JsonResponse(result_dict)
+            else:
+                result_dict['result'] = 'Make sure your car is right'
+                return JsonResponse(result_dict)
+        except Exception as e:
+            print(e)
+            result_dict['result'] = 'Fail'
             return JsonResponse(result_dict)
     except Exception as e:
         print(e)

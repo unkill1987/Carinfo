@@ -27,6 +27,41 @@
   @media (max-width:768px){ #white{display:none!important;}}
   @media (min-width:992px){ #black{display:none!important;}}
   label{width:140px;border-top-left-radius:5px;border-bottom-left-radius:5px;}
+
+ input[type=checkbox] {
+    display: none;
+}
+input[type=checkbox] + label{
+    display: inline-block;
+    cursor: pointer;
+    position: relative;
+    font-size: 13px;
+    width:30px;
+}
+input[type=checkbox]+ label:before {
+    content: "";
+    display: inline-block;
+
+    width: 20px;
+    height: 20px;
+
+    position: absolute;
+    background-color: #ccc;
+    border-radius: 2px;
+    box-shadow: inset 0px 1px 1px 0px rgba(0, 0, 0, .3), 0px 1px 0px 0px rgba(255, 255, 255, .8);
+}
+input[type=checkbox]:checked + label:before {
+    content: "\2713";
+    text-shadow: 1px 1px 1px rgba(0, 0, 0, .2);
+    font-size: 18px;
+    font-weight:800;
+    color: #fff;
+    background:#2f87c1;
+    text-align: center;
+    line-height: 18px;
+
+}
+
 </style>
   <body>
 
@@ -90,11 +125,15 @@
     </div>
       <hr>
       </div>
-      {% for car in allcars%}
+      {% for car in mycars%}
       <div class ="row" >
         <div class = "col-sm-12">
       <table  class="table" style="text-align:center;" >
                 <tr>
+                  <th rowspan="2" style="vertical-align: middle; padding:0px;">
+                     <input type="checkbox" id="{{car.id}}" value="{{ car.id }}">
+                     <label for="{{car.id}}" style="margin-right:10px"></label>
+                  </th>
                   <th>S/N</th>
                   <th>Brand</th>
                   <th>Model</th>
@@ -112,30 +151,27 @@
                   <td>{{car.sellprice}}</td>
                   <td>{{car.owner}}</td>
                 </tr>
-
               </table>
            <hr>
-          <div style="text-align:center;">
-            <button  id="details" type="button" class="btn btn-outline-dark">Details</button>
-          <button id="buy"  type="button" class="btn btn-outline-dark">Buy Now</button>
-            </div>
-          <hr>
-          </div>
 
+          </div>
         </div>
       {% endfor %}
-
+      <div class="col-12" style="text-align:center;">
+      <button id="delete"  type="button" class="btn btn-outline-dark">Delete</button>
+      </div>
+ <hr>
 
 <div class="pagination" style="text-align:center; margin:auto;">
     <span class="step-links" style="text-align:center; margin:auto;">
       <ul class="pagination pagination-lg" >
-        {% if allcars.has_previous %}
+        {% if mycars.has_previous %}
             <li><a class="btn" style="font-size:20px" href="?page=1">&laquo; first&nbsp</a></li>
             <li><a class="btn" style="font-size:20px" href="?page={{ contract.previous_page_number }}">previous</a></li>
         {% endif %}
 
 
-      {% for pg in allcars.paginator.page_range %}
+      {% for pg in mycars.paginator.page_range %}
         {% if blogs.number == pg %}
           <li><a style="font-size:20px" href="?page={{pg}}" class="btn btn-default">{{pg}}</a></li>
         {% else %}
@@ -144,7 +180,7 @@
       {% endfor %}
 
 
-        {% if allcars.has_next %}
+        {% if mycars.has_next %}
             <li><a class="btn" style="font-size:20px" href="?page={{ contract.next_page_number }}">next&nbsp</a></li>
             <li><a class="btn" style="font-size:20px" href="?page={{ contract.paginator.num_pages }}">last &raquo;</a></li>
         {% endif %}
@@ -152,11 +188,11 @@
     </span>
   </div>
 
-    <hr>
+<hr>
       </div>
 
 
-
+ <hr>
     <!-- Footer -->
     <footer>
       <div class="container">
@@ -178,4 +214,17 @@
 
   </body>
 
+ <script>
+      $('#delete').click(function() {
+        check_ids = ''
+        sep = ''
+        $('input:checked').each(function() {
+          check_ids += sep + $(this).val()
+          sep = ','
+        })
+
+        location = '/app/remove?check_id=' + check_ids
+        return false
+      })
+</script>
 </html>
