@@ -32,11 +32,6 @@
   .input-group{padding-left:32%;}
    #serial{display:none;}
 
-
-
-
-
-
 </style>
 <body>
 
@@ -155,7 +150,7 @@
                 <hr>
                 <div style="text-align:center;">
                     <button id="details" type = "submit" class="btn btn-outline-dark">Details</button>
-                    <button id="buy" type="button" class="btn btn-outline-dark">Buy Now</button>
+                    <button id="buy" type ="submit" formaction="{% url 'marketform'%}" class="btn btn-outline-dark">Buy Now</button>
                 </div>
                 <hr>
             </div>
@@ -216,5 +211,6 @@
 
 </body>
 <script>
+
 </script>
 </html>

@@ -30,11 +30,7 @@
   @media (min-width:992px){ #black{display:none!important;}}
   label{border-top-left-radius:5px;border-bottom-left-radius:5px; border:0px!important; width:80px;}
   .input-group{padding-left:32%;}
-
-
-
-
-
+   #serial{display:none;}
 
 </style>
 <body>
@@ -78,7 +74,7 @@
 
 <!-- Page Header -->
 <header class="masthead"
-        style="background-image: url('../../static/app/img/market.jpg');background-size:cover; background-repeat:no-repeat;">
+        style="background-image: url('../../../static/app/img/market.jpg');background-size:cover; background-repeat:no-repeat;">
     <div class="overlay"></div>
     <div class="container">
         <div class="row">
@@ -124,8 +120,10 @@
 
 
     {% for car in searchcars%}
+    <form method = "post" action ="{% url 'search'%}">
     <div class="row">
         <div class="col-sm-12">
+             <input id="serial" name = "sn" value="{{car.serialnumber}}">
             <table class="table" style="text-align:center;">
                 <tr>
                     <th>S/N</th>
@@ -149,13 +147,14 @@
             </table>
             <hr>
             <div style="text-align:center;">
-                <button id="details" type="button" class="btn btn-outline-dark">Details</button>
-                <button id="buy" type="button" class="btn btn-outline-dark">Buy Now</button>
+                <button id="details" type="submit" class="btn btn-outline-dark">Details</button>
+                <button id="buy" type ="submit" formaction="{% url 'marketform'%}" class="btn btn-outline-dark">Buy Now</button>
             </div>
             <hr>
         </div>
-
     </div>
+        {% csrf_token %}
+</form>
     {% endfor %}
 
 
@@ -209,5 +208,7 @@
 <script src="{% static 'app/js/clean-blog.min.js'%}"></script>
 
 </body>
+<script>
 
+</script>
 </html>

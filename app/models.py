@@ -11,6 +11,7 @@ class Sellcar(models.Model):
     volume = models.CharField(max_length=100)
     fuel = models.CharField(max_length=100)
     owner = models.CharField(max_length=100)
+    plate = models.CharField(max_length=100)
     whentobuy = models.CharField(max_length=100)
     sellprice = models.CharField(max_length=100)
     details = models.CharField(max_length=500)
@@ -18,6 +19,7 @@ class Sellcar(models.Model):
 class Market(models.Model):
     name = models.CharField(max_length=100)
     address = models.CharField(max_length=100)
+    residentnum = models.CharField(max_length=100)
     user_id = models.CharField(max_length=20, primary_key=True)
     passwd = models.CharField(max_length=20)
     passconfirm = models.CharField(max_length=20)

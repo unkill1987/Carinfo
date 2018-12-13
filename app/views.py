@@ -9,11 +9,27 @@ from django.utils import timezone
 from app.models import Manufacture, Government, Repairshop, Insurance, Sellcar, Market
 from carinfo import settings
 
+def marketform(request):
+    try:
+        buyer = request.session['user_id']
+        buyerrrn = Market.objects.filter(user_id=buyer).values('residentnum')[0]['residentnum'][:8]+'*'*6
+        sn = request.POST['sn']
+        url = ("http://localhost:8001/history/%s" % sn)
+        res = requests.get(url)
+        history = res.json()
+        init = history[0]
+        info = Sellcar.objects.filter(serialnumber=sn)
+        seller = info.values('owner')[0]['owner']
+        sellerrrn = Market.objects.filter(user_id=seller).values('residentnum')[0]['residentnum'][:8]+'*'*6
+        return render(request,'app/marketform.html',{'init':init, 'info':info, 'buyer':buyer, 'sn':sn,'buyerrrn':buyerrrn,'sellerrrn':sellerrrn })
+    except Exception as e:
+        print(e)
+        return redirect('market')
+
 def marketdetails(request):
     try:
 
         sn = request.POST['serial']
-        print(sn)
         url = ("http://localhost:8001/history/%s" % sn)
         res = requests.get(url)
         history = res.json()
@@ -113,6 +129,7 @@ def marketregister(request):
         User_id = request.POST['user_id']
         PW = request.POST['passwd']
         CPW = request.POST['confirm']
+        RRN = request.POST['residentnum']
 
         if PW != CPW:
             result_dict['result'] = 'Password does not match'
@@ -122,11 +139,11 @@ def marketregister(request):
                 Market.objects.get(user_id=User_id)
                 result_dict['result'] = 'ID cannot be used'
             except Market.DoesNotExist:
-                market = Market(name=Name, address=Address, user_id=User_id, passwd=PW, passconfirm=CPW )
+                market = Market(name=Name, address=Address, user_id=User_id, passwd=PW, passconfirm=CPW, residentnum=RRN )
                 market.c_date = timezone.now()
                 market.save()
                 result_dict['result'] = 'success'
-            return JsonResponse(result_dict)
+        return JsonResponse(result_dict)
 
 def registervehicle(request):
    return render(request, 'app/registervehicle.html',{})
@@ -183,8 +200,8 @@ def register(request):
         Fuel = init['Value']['fuel']
         Sellprice = request.POST['sellprice']
         Details = request.POST['details']
-        currentowner = []
 
+        currentowner = []
         for i in range(0,len(history)):
             owner = history[i]['Value']['owner']
             if owner == '':
@@ -193,16 +210,26 @@ def register(request):
                 currentowner.append(owner)
                 set(currentowner)
                 seller=currentowner[-1]
-        serial = []
 
+        serial = []
         for i in Sellcar.objects.all():
             num=i.serialnumber
             serial.append(num)
 
+        currentplate=[]
+        for i in range(0,len(history)):
+            plate = history[i]['Value']['plate']
+            if plate == '':
+                pass
+            else:
+                currentplate.append(plate)
+                set(currentplate)
+                p = currentplate[-1]
+
         result_dict = {}
         try:
             if  sn not in serial and seller == user_name:
-                sellcar = Sellcar(serialnumber=sn, company=Company, modelname=Model, type=Type, volume=Volume, fuel=Fuel, owner=user_id, whentobuy=Time, sellprice=Sellprice, details=Details)
+                sellcar = Sellcar(serialnumber=sn, company=Company, modelname=Model, type=Type, volume=Volume, fuel=Fuel, owner=user_id, whentobuy=Time, sellprice=Sellprice, details=Details, plate=p)
                 sellcar.save()
                 result_dict['result'] = 'Success'
                 return JsonResponse(result_dict)

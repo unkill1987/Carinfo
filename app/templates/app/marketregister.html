@@ -72,7 +72,7 @@
 
 <!-- Page Header -->
 <header class="masthead"
-        style="background-image: url('../../static/app/img/market.jpg');background-size:cover; background-repeat:no-repeat;">
+        style="background-image: url('../../../static/app/img/market.jpg');background-size:cover; background-repeat:no-repeat;">
     <div class="overlay"></div>
     <div class="container">
 
@@ -100,6 +100,16 @@
                 <div class="input-group">
                     <label class="input-group-text">NAME</label>
                     <input class="form-control" id="name" name="name" type="text" required="required">
+
+                </div>
+            </div>
+        </div>
+        <div style="font-size:5px">&nbsp</div>
+         <div class="row">
+            <div class="col-lg-8 col-md-10 mx-auto">
+                <div class="input-group">
+                    <label class="input-group-text">RRN</label>
+                    <input class="form-control" id="residentnum" name="residentnum" type="text" required="required">
 
                 </div>
             </div>
@@ -178,17 +188,19 @@
 </body>
 <script>
   $('#register').click(function(){
+  $('.btn').attr('disabled',true);
     $.ajax({
-      url:'/app/marketregister/',
+      url:'/app/market/register/',
       type:'post',
       data:$('form').serialize(),
       success: function(res){
 
         if(res.result == 'success'){
            alert(res.result)
-          location = '/app/marketlogin'
+            location = '/app/market/login'
         }else{
         alert(res.result)
+            location ='/app/market/register/'
         }
        }
     })

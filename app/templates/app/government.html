@@ -149,6 +149,7 @@
 </body>
 <script>
   $('#login').click(function(){
+  $('.btn').attr('disabled',true);
     $.ajax({
       url:'/app/government/',
       type:'post',
@@ -159,6 +160,7 @@
           location = 'record'
         }else{
         alert(res.result)
+          location = '/app/government/'
         }
        }
     })

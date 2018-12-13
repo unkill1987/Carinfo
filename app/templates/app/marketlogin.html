@@ -72,7 +72,7 @@
 
 <!-- Page Header -->
 <header class="masthead"
-        style="background-image: url('../../static/app/img/market.jpg');background-size:cover; background-repeat:no-repeat;">
+        style="background-image: url('../../../static/app/img/market.jpg');background-size:cover; background-repeat:no-repeat;">
     <div class="overlay"></div>
     <div class="container">
 
@@ -148,8 +148,9 @@
 </body>
 <script>
   $('#login').click(function(){
+  $('.btn').attr('disabled',true);
     $.ajax({
-      url:'/app/marketlogin/',
+      url:'/app/market/login/',
       type:'post',
       data:$('form').serialize(),
       success: function(res){
@@ -158,6 +159,7 @@
           location = '/app/market'
         }else{
         alert(res.result)
+        location = '/app/market/login/'
         }
        }
     })

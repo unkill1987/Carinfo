@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="{%static 'app/img/vehicle-black.png'%}"/>
+    <title>VEHICLE HISTORY</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="{% static 'app/vendor/bootstrap/css/bootstrap.min.css'%}" rel="stylesheet">
+
+    <!-- Custom fonts for this template -->
+    <link href="{% static 'app/vendor/fontawesome-free/css/all.min.css'%}" rel="stylesheet" type="text/css">
+    <link href='https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet'
+          type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800'
+          rel='stylesheet' type='text/css'>
+
+    <!-- Custom styles for this template -->
+    <link href="{% static 'app/css/clean-blog.min.css'%}" rel="stylesheet">
+
+</head>
+<style>
+  @media (max-width:768px){ #white{display:none!important;}}
+  @media (min-width:992px){ #black{display:none!important;}}
+  label{width:140px;border-top-left-radius:5px;border-bottom-left-radius:5px; border:0px!important;}
+  tr,td{border:solid;}
+
+
+
+
+</style>
+<body>
+
+<!-- Navigation -->
+<nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
+    <div class="container">
+        <img id="white" style="width:2.5%;" src="{% static 'app/img/vehicle.png'%}">
+        <img id="black" style="width:30px;" src="{% static 'app/img/vehicle-black.png'%}">
+        <a href="{% url 'index'%}" class="navbar-brand" style="padding-left:0px;">VEHICLE HISTORY</a>
+        <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
+                data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
+                aria-label="Toggle navigation">
+            Menu
+            <i class="fas fa-bars"></i>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarResponsive">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'market' %}">Market</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'manufacture_record' %}">Manufacture</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'government_record' %}">Government</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'repairshop_record' %}">Repairshop</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'insurance_record' %}">Insuarance</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'logout' %}">Logout</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<!-- Page Header -->
+<header class="masthead"
+        style="background-image: url('../../../static/app/img/contract.jpg');background-size:cover; background-repeat:no-repeat;">
+    <div class="overlay"></div>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12 col-md-10 mx-auto">
+                <div class="site-heading">
+                    <h1>Make a Form</h1>
+                    <span class="subheading" style="font-size:40px;">Own Your Vehicle</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Main Content -->
+<div style="padding-left:60px; padding-right:60px;">
+    <h2 style="margin:10px;">Contract Form</h2>
+
+    <div class="col-sm-12">
+        {% for i in info %}
+        <table class="table" style="text-align:center;">
+            <tr>
+                <th colspan="4">1.Vehicle Information</th>
+            </tr>
+            <tr>
+                <th colspan="2">Serial Number</th>
+                <td colspan="2">{{sn}}</td>
+            </tr>
+            <tr>
+                <th>Type</th>
+                <td>{{init.Value.vehicletype}}</td>
+                <th>Model</th>
+                <td>{{init.Value.name}}</td>
+            </tr>
+            <tr>
+                <th>Exhaust Volume</th>
+                <td>{{init.Value.volume}}</td>
+                <th>Fuel</th>
+                <td>{{init.Value.fuel}}</td>
+            </tr>
+            <tr>
+                <th>Plate</th>
+                <td>{{i.plate}}</td>
+                <th>Owner</th>
+                <td>{{i.owner}}</td>
+            </tr>
+            <tr>
+                <th colspan="4">2.Contrat Content</th>
+            </tr>
+            <tr>
+                <th>Price</th>
+                <td>{{i.sellprice}}</td>
+                <th>Option</th>
+                <td></td>
+            </tr>
+            <tr>
+                <th colspan="4">3. Terms of service</th>
+            </tr>
+            <tr>
+                <td colspan="4" style="text-align:left;">
+                    &nbsp The sale is subject to the following conditions and representations:
+                    Seller acknowledges receipt of $ enter amount here in down payment for the Vehicle, full payment
+                    from the Buyer and title transfer to take place within number of days days.<br>
+                    <br>
+                    &nbsp Seller allows the Buyer number of days days to have the Vehicle inspected by an independent
+                    mechanic
+                    and agrees to cancel the sale if the inspection is unsatisfactory to the Buyer.<br>
+                    <br>
+                    &nbsp If the sale is not completed, the Seller will retain $:enter amount of the down payment to
+                    cover
+                    costs and effort in re-advertising.<br>
+                    <br>
+                    &nbsp Seller certifies to the best of the Seller's knowledge that the odometer reading listed in the
+                    vehicle description above reflects the actual mileage of the Vehicle. The Vehicle's odometer was not
+                    altered, set back, or disconnected while in the Seller's possession, and the Seller has no knowledge
+                    of anyone doing so.<br>
+                    <br>
+                    &nbsp Seller warrants to Buyer that Seller has good and marketable title to said property, full
+                    authority
+                    to sell and transfer said property. The property is sold free of all liens, encumbrances,
+                    liabilities, and adverse claims of every nature and description whatsoever.<br>
+                    <br>
+                    &nbsp Seller has no knowledge of any hidden defects in and to the Vehicle, and believes to the best
+                    of the
+                    Seller's knowledge that the Vehicle being sold is in good operating condition. Said Vehicle is
+                    otherwise sold in “as is” condition and where currently located.
+                    <br>
+                </td>
+            </tr>
+            <tr>
+                <th colspan="4">4. Trader Information</th>
+            </tr>
+            <tr>
+                <th>Seller</th>
+                <td>{{i.owner}}</td>
+                <th>Resident Registration Number</th>
+                <td>{{sellerrrn}}</td>
+            </tr>
+            <tr>
+                <th>Buyer</th>
+                <td>{{buyer}}</td>
+                <th>Resident Registration Number</th>
+                <td>{{buyerrrn}}</td>
+            </tr>
+
+
+        </table>
+        {% endfor %}
+        <hr>
+        <div style="text-align:center;">
+            <button class="btn btn-outline-dark">Payment</button>
+            <a href="{% url 'market'%}">
+                <button class="btn btn-outline-dark">Cancel</button>
+            </a>
+        </div>
+    </div>
+</div>
+
+<hr>
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-md-10 mx-auto">
+
+                <p class="copyright text-muted">Copyright &copy; VEHICLE HISTORY 2018</p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- Bootstrap core JavaScript -->
+<script src="{% static 'app/vendor/jquery/jquery.min.js'%}"></script>
+<script src="{% static 'app/vendor/bootstrap/js/bootstrap.bundle.min.js'%}"></script>
+
+<!-- Custom scripts for this template -->
+<script src="{% static 'app/js/clean-blog.min.js'%}"></script>
+
+</body>
+<script>
+
+</script>
+</html>
