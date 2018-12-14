@@ -28,6 +28,10 @@ urlpatterns = [
     path('market/register/', views.marketregister, name='marketregister'),
     path('market/details/', views.marketdetails, name='marketdetails'),
     path('market/form/', views.marketform, name='marketform'),
+    path('market/mypage/', views.mypage, name='mypage'),
+    path('modify/', views.modify, name='modify'),
+    path('makeotp/', views.makeotp, name='makeotp'),
+
     path('registervehicle/', views.registervehicle, name='registervehicle'),
     path('register/', views.register, name='register'),
     path('mytrade/', views.mytrade, name='mytrade'),

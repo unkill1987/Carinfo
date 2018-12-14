@@ -100,6 +100,9 @@
                 <a href="{%url 'registervehicle'%}">
                     <button type="button" class="btn btn-outline-dark">Register Vehicle</button>
                 </a>
+                <a href="{%url 'mypage'%}">
+                <button type="button" class="btn btn-outline-dark">My Page</button>
+            </a>
             </div>
             <hr>
         </div>
@@ -135,6 +138,18 @@
                 <div class="input-group">
                     <label class="input-group-text">Details</label>
                     <textarea class="form-control" rows="5" name="details" type="text" required="required"></textarea>
+                </div>
+              </div>
+
+        </div>
+
+        <div style="font-size:5px">&nbsp</div>
+
+        <div class="row">
+            <div class="col-lg-8 col-md-10 mx-auto">
+                <div class="input-group">
+                    <label class="input-group-text">OTP</label>
+                    <input class="form-control" name="otp" type="text" required="required">
                 </div>
                 <hr>
             </div>
@@ -186,7 +201,7 @@
 
         }else{
           alert(res.result)
-          location = '/app/market'
+          location = '/app/registervehicle/'
         }
        }
     })

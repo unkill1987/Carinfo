@@ -32,6 +32,7 @@
   .input-group{padding-left:32%;}
    #serial{display:none;}
 
+
 </style>
 <body>
 
@@ -101,18 +102,23 @@
             <a href="{%url 'registervehicle'%}">
                 <button type="button" class="btn btn-outline-dark">Register Vehicle</button>
             </a>
+            <a href="{%url 'mypage'%}">
+                <button type="button" class="btn btn-outline-dark">My Page</button>
+            </a>
         </div>
         <hr>
         <form method="post" action="{% url 'marketsearch'%}">
-        <div class="row">
-            <div class="input-group">
-                <label class="input-group-text" for="vehiclesearch">Model</label>
-                <input id="vehiclesearch" name="vehiclesearch" class="formcontrol" type="text" name="vehicleseach">
-                <span class="input-group-append">
-                    <button class="btn btn-outline-dark" type="submit" style="border-top-right-radius:5px;border-bottom-right-radius:5px;" id="search">Search</button>
+            <div class="row">
+                <div class="input-group">
+                    <label class="input-group-text" for="vehiclesearch">Model</label>
+                    <input id="vehiclesearch" name="vehiclesearch" class="formcontrol" type="text" name="vehicleseach">
+                    <span class="input-group-append">
+                    <button class="btn btn-outline-dark" type="submit"
+                            style="border-top-right-radius:5px;border-bottom-right-radius:5px;"
+                            id="search">Search</button>
                 </span>
+                </div>
             </div>
-        </div>
             {% csrf_token%}
         </form>
         <hr>
@@ -120,41 +126,43 @@
 
 
     {% for car in searchcars%}
-    <form method = "post" action ="{% url 'search'%}">
-    <div class="row">
-        <div class="col-sm-12">
-             <input id="serial" name = "sn" value="{{car.serialnumber}}">
-            <table class="table" style="text-align:center;">
-                <tr>
-                    <th>S/N</th>
-                    <th>Brand</th>
-                    <th>Model</th>
-                    <th>Type</th>
-                    <th>Date of manufacture</th>
-                    <th>SellPrice</th>
-                    <th>Owner</th>
-                </tr>
-                <tr>
-                    <td>{{car.serialnumber}}</td>
-                    <td>{{car.company}}</td>
-                    <td>{{car.modelname}}</td>
-                    <td>{{car.type}}</td>
-                    <td>{{car.whentobuy}}</td>
-                    <td>{{car.sellprice}}</td>
-                    <td>{{car.owner}}</td>
-                </tr>
+    <form method="post" action="{% url 'search'%}">
+        <div class="row">
+            <div class="col-sm-12">
+                <input id="serial" name="sn" value="{{car.serialnumber}}">
+                <table class="table" style="text-align:center;">
+                    <tr>
+                        <th>S/N</th>
+                        <th>Brand</th>
+                        <th>Model</th>
+                        <th>Type</th>
+                        <th>Date of manufacture</th>
+                        <th>SellPrice</th>
+                        <th>Owner</th>
+                    </tr>
+                    <tr>
+                        <td>{{car.serialnumber}}</td>
+                        <td>{{car.company}}</td>
+                        <td>{{car.modelname}}</td>
+                        <td>{{car.type}}</td>
+                        <td>{{car.whentobuy}}</td>
+                        <td>{{car.sellprice}}</td>
+                        <td>{{car.owner}}</td>
+                    </tr>
 
-            </table>
-            <hr>
-            <div style="text-align:center;">
-                <button id="details" type="submit" class="btn btn-outline-dark">Details</button>
-                <button id="buy" type ="submit" formaction="{% url 'marketform'%}" class="btn btn-outline-dark">Buy Now</button>
+                </table>
+                <hr>
+                <div style="text-align:center;">
+                    <button id="details" type="submit" class="btn btn-outline-dark">Details</button>
+                    <button id="buy" type="submit" formaction="{% url 'marketform'%}" class="btn btn-outline-dark">Buy
+                        Now
+                    </button>
+                </div>
+                <hr>
             </div>
-            <hr>
         </div>
-    </div>
         {% csrf_token %}
-</form>
+    </form>
     {% endfor %}
 
 

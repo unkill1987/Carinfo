@@ -65,6 +65,9 @@ input[type=checkbox]:checked + label:before {
 }
 
 
+
+
+
 </style>
 <body>
 
@@ -107,14 +110,14 @@ input[type=checkbox]:checked + label:before {
 
 <!-- Page Header -->
 <header class="masthead"
-        style="background-image: url('../../static/app/img/market.jpg');background-size:cover; background-repeat:no-repeat;">
+        style="background-image: url('../../static/app/img/garage.jpg');background-size:cover; background-repeat:no-repeat;">
     <div class="overlay"></div>
     <div class="container">
         <div class="row">
             <div class="col-lg-8 col-md-10 mx-auto">
                 <div class="site-heading">
-                    <h1>Vehicle Market</h1>
-                    <span class="subheading" style="font-size:40px;">Buy and Sell Vehicles</span>
+                    <h1>My Garage</h1>
+                    <span class="subheading" style="font-size:40px;">manage Your Vehicles</span>
                 </div>
             </div>
         </div>
@@ -133,6 +136,9 @@ input[type=checkbox]:checked + label:before {
             </a>
             <a href="{%url 'registervehicle'%}">
                 <button type="button" class="btn btn-outline-dark">Register Vehicle</button>
+            </a>
+            <a href="{%url 'mypage'%}">
+                <button type="button" class="btn btn-outline-dark ">My Page</button>
             </a>
         </div>
         <hr>
@@ -169,8 +175,11 @@ input[type=checkbox]:checked + label:before {
         </div>
     </div>
     {% endfor %}
-    <div class="col-12" style="text-align:center;">
-        <button id="delete" type="button" class="btn btn-outline-dark">Delete</button>
+    <div class="row" style="text-align:center;">
+            <div class="col-lg-4 col-md-10 mx-auto">
+                <button id="delete" type="button" class="btn btn-outline-dark  btn-block">Delete</button>
+            </div>
+        </div>
     </div>
     <hr>
 
@@ -201,7 +210,6 @@ input[type=checkbox]:checked + label:before {
     </span>
     </div>
 
-    <hr>
 </div>
 
 
@@ -239,6 +247,9 @@ input[type=checkbox]:checked + label:before {
         location = '/app/remove?check_id=' + check_ids
         return false
       })
+
+
+
 
 </script>
 </html>

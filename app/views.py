@@ -8,11 +8,40 @@ from django.utils import timezone
 
 from app.models import Manufacture, Government, Repairshop, Insurance, Sellcar, Market
 from carinfo import settings
+import qrcode
+import pyotp
+import time
+
+
+def mypage(request):
+    return render(request, 'app/mypage.html',{})
+
+def makeotp(request):
+    if request.method == 'GET':
+        return render(request, 'app/marketlogin.html', {})
+    else:
+        try:
+            user_id = request.session['user_id']
+            otpkey =pyotp.random_base32()
+            otpsave = Market.objects.get(user_id=user_id)
+            if  Market.objects.filter(user_id=user_id).values('otp')[0]['otp'] == '':
+                otpsave.otp = otpkey
+                otpsave.save()
+                data = pyotp.totp.TOTP(otpkey).provisioning_uri(user_id, issuer_name="Vehicle App")
+
+                return render(request, 'app/mypage.html', {'otpkey': otpkey, 'user_id': user_id, 'data':data})
+            else:
+                message = "Already Issued"
+                return render(request, 'app/mypage.html',{'message':message})
+        except Exception as e:
+            print(e)
+            return redirect('market')
+
 
 def marketform(request):
     try:
         buyer = request.session['user_id']
-        buyerrrn = Market.objects.filter(user_id=buyer).values('residentnum')[0]['residentnum'][:8]+'*'*6
+        buyerrrn = Market.objects.filter(user_id=buyer).values('residentnum')[0]['residentnum'][:8] + '*' * 6
         sn = request.POST['sn']
         url = ("http://localhost:8001/history/%s" % sn)
         res = requests.get(url)
@@ -20,11 +49,14 @@ def marketform(request):
         init = history[0]
         info = Sellcar.objects.filter(serialnumber=sn)
         seller = info.values('owner')[0]['owner']
-        sellerrrn = Market.objects.filter(user_id=seller).values('residentnum')[0]['residentnum'][:8]+'*'*6
-        return render(request,'app/marketform.html',{'init':init, 'info':info, 'buyer':buyer, 'sn':sn,'buyerrrn':buyerrrn,'sellerrrn':sellerrrn })
+        sellerrrn = Market.objects.filter(user_id=seller).values('residentnum')[0]['residentnum'][:8] + '*' * 6
+        return render(request, 'app/marketform.html',
+                      {'init': init, 'info': info, 'buyer': buyer, 'sn': sn, 'buyerrrn': buyerrrn,
+                       'sellerrrn': sellerrrn})
     except Exception as e:
         print(e)
         return redirect('market')
+
 
 def marketdetails(request):
     try:
@@ -37,7 +69,7 @@ def marketdetails(request):
         history.pop(0)
         history.reverse()
 
-        return render(request, 'app/marketdetails.html',{'history':history, 'init':init})
+        return render(request, 'app/marketdetails.html', {'history': history, 'init': init})
     except Exception as e:
         print(e)
         return redirect('market')
@@ -59,23 +91,26 @@ def marketsearch(request):
         print(e)
         return redirect('marketlogin')
 
+
 def search(request):
     try:
         sn = str(request.POST['sn'])
-        url = ("http://localhost:8001/history/%s" %sn)
+        url = ("http://localhost:8001/history/%s" % sn)
         res = requests.get(url)
         history = res.json()
         init = history[0]
         history.pop(0)
         history.reverse()
 
-        return render(request, 'app/search.html', {'sn':sn,'history':history, 'init':init})
+        return render(request, 'app/search.html', {'sn': sn, 'history': history, 'init': init})
     except Exception as e:
         print(e)
         return redirect('index')
 
+
 def index(request):
     return render(request, 'app/index.html', {})
+
 
 def market(request):
     try:
@@ -93,11 +128,12 @@ def market(request):
             page = request.GET.get('page')
             allcars = paginator.get_page(page)
 
-        return render(request, templates, {'allcars': allcars, 'n': n,'uesr_id':user_id})
+        return render(request, templates, {'allcars': allcars, 'n': n, 'uesr_id': user_id})
 
     except Exception as e:
         print(e)
         return redirect('marketlogin')
+
 
 def marketlogin(request):
     if request.method == 'GET':
@@ -118,11 +154,12 @@ def marketlogin(request):
             result_dict['result'] = 'fail'
         return JsonResponse(result_dict)
 
+
 def marketregister(request):
     if request.method == 'GET':
         return render(request, 'app/marketregister.html', {})
     else:
-        result_dict={}
+        result_dict = {}
 
         Name = request.POST['name']
         Address = request.POST['address']
@@ -139,14 +176,44 @@ def marketregister(request):
                 Market.objects.get(user_id=User_id)
                 result_dict['result'] = 'ID cannot be used'
             except Market.DoesNotExist:
-                market = Market(name=Name, address=Address, user_id=User_id, passwd=PW, passconfirm=CPW, residentnum=RRN )
+                market = Market(name=Name, address=Address, user_id=User_id, passwd=PW, passconfirm=CPW,
+                                residentnum=RRN)
                 market.c_date = timezone.now()
                 market.save()
                 result_dict['result'] = 'success'
         return JsonResponse(result_dict)
 
+def modify(request):
+    if request.method == 'GET':
+        return render(request, 'app/maypage.html', {})
+    else:
+        user_id = request.session['user_id']
+        pw = request.POST['passwd']
+        newpw = request.POST['newpasswd']
+        cpw = request.POST['confirm']
+        address = request.POST['address']
+        result_dict = {}
+        PW = Market.objects.filter(user_id=user_id).values('passwd')[0]['passwd']
+        try:
+            if pw == PW and newpw == cpw:
+                market = Market.objects.get(user_id=user_id)
+                market.passwd = newpw
+                market.passconfirm = cpw
+                market.address = address
+                market.save()
+                alret = "Success"
+                return render(request,'app/mypage.html',{'alret':alret})
+            else:
+                alret = "Fail"
+                return render(request, 'app/mypage.html', {'alret': alret})
+        except Exception as e:
+            print(e)
+            return redirect('mypage')
+
+
 def registervehicle(request):
-   return render(request, 'app/registervehicle.html',{})
+    return render(request, 'app/registervehicle.html', {})
+
 
 def mytrade(request):
     try:
@@ -164,14 +231,14 @@ def mytrade(request):
             page = request.GET.get('page')
             mycars = paginator.get_page(page)
 
-        return render(request, templates, {'mycars': mycars, 'n': n,'uesr_id':user_id})
+        return render(request, templates, {'mycars': mycars, 'n': n, 'uesr_id': user_id})
 
     except Exception as e:
         print(e)
         return redirect('marketlogin')
 
-def remove(request):
 
+def remove(request):
     check_id = request.GET['check_id']
     check_ids = check_id.split(',')
 
@@ -185,9 +252,10 @@ def remove(request):
 
 def register(request):
     try:
-        user_id=request.session['user_id']
+        user_id = request.session['user_id']
         user_name = request.session['name']
         sn = request.POST['sn']
+        otp = request.POST['otp']
         url = ("http://localhost:8001/history/%s" % sn)
         res = requests.get(url)
         history = res.json()
@@ -202,22 +270,22 @@ def register(request):
         Details = request.POST['details']
 
         currentowner = []
-        for i in range(0,len(history)):
+        for i in range(0, len(history)):
             owner = history[i]['Value']['owner']
             if owner == '':
                 pass
             else:
                 currentowner.append(owner)
                 set(currentowner)
-                seller=currentowner[-1]
+                seller = currentowner[-1]
 
         serial = []
         for i in Sellcar.objects.all():
-            num=i.serialnumber
+            num = i.serialnumber
             serial.append(num)
 
-        currentplate=[]
-        for i in range(0,len(history)):
+        currentplate = []
+        for i in range(0, len(history)):
             plate = history[i]['Value']['plate']
             if plate == '':
                 pass
@@ -227,23 +295,32 @@ def register(request):
                 p = currentplate[-1]
 
         result_dict = {}
-        try:
-            if  sn not in serial and seller == user_name:
-                sellcar = Sellcar(serialnumber=sn, company=Company, modelname=Model, type=Type, volume=Volume, fuel=Fuel, owner=user_id, whentobuy=Time, sellprice=Sellprice, details=Details, plate=p)
-                sellcar.save()
-                result_dict['result'] = 'Success'
+
+        otpkey = Market.objects.filter(user_id=user_id).values('otp')[0]['otp']
+        totp = pyotp.TOTP(otpkey)
+        nowotp = totp.now()
+        if otp == nowotp:
+            try:
+                if sn not in serial and seller == user_name:
+                    sellcar = Sellcar(serialnumber=sn, company=Company, modelname=Model, type=Type, volume=Volume,
+                                      fuel=Fuel, owner=user_id, whentobuy=Time, sellprice=Sellprice, details=Details,
+                                      plate=p)
+                    sellcar.save()
+                    result_dict['result'] = 'Success'
+                    return JsonResponse(result_dict)
+                else:
+                    result_dict['result'] = 'Make sure your car is right'
+                    return JsonResponse(result_dict)
+            except Exception as e:
+                print(e)
+                result_dict['result'] = 'Fail'
                 return JsonResponse(result_dict)
-            else:
-                result_dict['result'] = 'Make sure your car is right'
-                return JsonResponse(result_dict)
-        except Exception as e:
-            print(e)
-            result_dict['result'] = 'Fail'
+        else:
+            result_dict['result'] = 'OTP Authentication Failed'
             return JsonResponse(result_dict)
     except Exception as e:
         print(e)
-        return render(request, 'app/market.html',{})
-
+        return redirect('registervehicle')
 
 def manufacture(request):
     if request.method == 'GET':
@@ -389,7 +466,6 @@ def insurance_record(request):
 
 
 def recordcarinfo(request):
-
     sn = request.POST['sn']
     manufacture = request.session['company']
     factory = request.POST['factory']
@@ -402,7 +478,7 @@ def recordcarinfo(request):
     response = requests.get(url)
     res = response.text
 
-    result_dict={}
+    result_dict = {}
     if (res == "The contract already exists"):
         result_dict['result'] = 'Already exists Vehicle'
     else:
@@ -410,9 +486,7 @@ def recordcarinfo(request):
     return JsonResponse(result_dict)
 
 
-
 def recordcarchange(request):
-
     government = request.session['government']
     sn = request.POST['sn']
     plate = request.POST['plate']
@@ -450,7 +524,6 @@ def recordcarrepair(request):
     return JsonResponse(result_dict)
 
 
-
 def recordcaraccident(request):
     insurance = request.session['insurance']
     sn = request.POST['sn']
@@ -470,7 +543,6 @@ def recordcaraccident(request):
 
 
 def logout(request):
-
     try:
         try:
             if len(str(request.session['insurance'])) != 0:

@@ -23,6 +23,7 @@ class Market(models.Model):
     user_id = models.CharField(max_length=20, primary_key=True)
     passwd = models.CharField(max_length=20)
     passconfirm = models.CharField(max_length=20)
+    otp = models.CharField(max_length=50)
 
     def __str__(self):
         return self.user_id
