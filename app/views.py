@@ -98,11 +98,16 @@ def search(request):
         url = ("http://localhost:8001/history/%s" % sn)
         res = requests.get(url)
         history = res.json()
-        init = history[0]
-        history.pop(0)
-        history.reverse()
+        if len(history) == 0:
+            message = "Invalid S/N"
+            return render(request, 'app/index.html',{'message':message})
+        else:
 
-        return render(request, 'app/search.html', {'sn': sn, 'history': history, 'init': init})
+            init = history[0]
+            history.pop(0)
+            history.reverse()
+
+            return render(request, 'app/search.html', {'sn': sn, 'history': history, 'init': init})
     except Exception as e:
         print(e)
         return redirect('index')
