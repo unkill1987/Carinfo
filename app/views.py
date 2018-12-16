@@ -43,7 +43,7 @@ def marketform(request):
         buyer = request.session['user_id']
         buyerrrn = Market.objects.filter(user_id=buyer).values('residentnum')[0]['residentnum'][:8] + '*' * 6
         sn = request.POST['sn']
-        url = ("http://localhost:8001/history/%s" % sn)
+        url = ("http://202.182.98.175:8001/history/%s" % sn)
         res = requests.get(url)
         history = res.json()
         init = history[0]
@@ -62,7 +62,7 @@ def marketdetails(request):
     try:
 
         sn = request.POST['serial']
-        url = ("http://localhost:8001/history/%s" % sn)
+        url = ("http://202.182.98.175:8001/history/%s" % sn)
         res = requests.get(url)
         history = res.json()
         init = history[0]
@@ -95,7 +95,7 @@ def marketsearch(request):
 def search(request):
     try:
         sn = str(request.POST['sn'])
-        url = ("http://localhost:8001/history/%s" % sn)
+        url = ("http://202.182.98.175:8001/history/%s" % sn)
         res = requests.get(url)
         history = res.json()
         if len(history) == 0:
@@ -261,7 +261,7 @@ def register(request):
         user_name = request.session['name']
         sn = request.POST['sn']
         otp = request.POST['otp']
-        url = ("http://localhost:8001/history/%s" % sn)
+        url = ("http://202.182.98.175:8001/history/%s" % sn)
         res = requests.get(url)
         history = res.json()
         init = history[0]
@@ -479,7 +479,7 @@ def recordcarinfo(request):
     volume = request.POST['volume']
     fuel = request.POST['fuel']
 
-    url = 'http://localhost:8001/init_car/' + sn + '-' + manufacture + '-' + factory + '-' + name + '-' + type + '-' + volume + '-' + fuel
+    url = 'http://202.182.98.175:8001/init_car/' + sn + '-' + manufacture + '-' + factory + '-' + name + '-' + type + '-' + volume + '-' + fuel
     response = requests.get(url)
     res = response.text
 
@@ -499,7 +499,7 @@ def recordcarchange(request):
     tradehistory = request.POST['tradehistory']
     price = request.POST['price']
 
-    url = 'http://localhost:8001/change_car/' + sn + '-' + government + '-' + plate + '-' + owner + '-' + tradehistory + '-' + price
+    url = 'http://202.182.98.175:8001/change_car/' + sn + '-' + government + '-' + plate + '-' + owner + '-' + tradehistory + '-' + price
     response = requests.get(url)
     res = response.text
 
@@ -517,7 +517,7 @@ def recordcarrepair(request):
     repair = request.POST['repair']
     repairprice = request.POST['repairprice']
 
-    url = 'http://localhost:8001/repair_car/' + sn + '-' + repair + '-' + repairprice + '-' + shop
+    url = 'http://202.182.98.175:8001/repair_car/' + sn + '-' + repair + '-' + repairprice + '-' + shop
     response = requests.get(url)
     res = response.text
 
@@ -535,7 +535,7 @@ def recordcaraccident(request):
     accident = request.POST['accident']
     costs = request.POST['costs']
 
-    url = 'http://localhost:8001/accident_car/' + sn + '-' + accident + '-' + costs + '-' + insurance
+    url = 'http://202.182.98.175:8001/accident_car/' + sn + '-' + accident + '-' + costs + '-' + insurance
     response = requests.get(url)
     res = response.text
 
