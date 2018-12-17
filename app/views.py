@@ -3,12 +3,10 @@ import os
 from django.core.paginator import Paginator
 from django.http import JsonResponse, HttpResponse
 from django.shortcuts import render, redirect
-import requests
 from django.utils import timezone
-
+import requests
 from app.models import Manufacture, Government, Repairshop, Insurance, Sellcar, Market
 from carinfo import settings
-import qrcode
 import pyotp
 import time
 
