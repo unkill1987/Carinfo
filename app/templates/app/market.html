@@ -32,6 +32,7 @@
   .input-group{padding-left:32%;}
    #serial{display:none;}
 
+
 </style>
 <body>
 
@@ -124,11 +125,11 @@
     </div>
 
 
-    {% for car in allcars%}
-<form method = "post" action = "{% url 'search'%}">
+    {% for car in result_list%}
+    <form method="post" action="{% url 'search'%}">
         <div class="row">
             <div class="col-sm-12">
-                <input id="serial" name = "sn" value="{{car.serialnumber}}">
+                <input id="serial" name="sn" value="{{car.serialnumber}}">
                 <table class="table" style="text-align:center;">
                     <tr>
                         <th>S/N</th>
@@ -152,45 +153,73 @@
                 </table>
                 <hr>
                 <div style="text-align:center;">
-                    <button id="details" type = "submit" class="btn btn-outline-dark">Details</button>
-                    <button id="buy" type ="submit" formaction="{% url 'marketform'%}" class="btn btn-outline-dark">Buy Now</button>
+                    <button id="details" type="submit" class="btn btn-outline-dark">Details</button>
+                    <button id="buy" type="submit" formaction="{% url 'marketform'%}" class="btn btn-outline-dark">Buy
+                        Now
+                    </button>
                 </div>
                 <hr>
             </div>
         </div>
-    {% csrf_token %}
-</form>
+        {% csrf_token %}
+    </form>
     {% endfor %}
+    <hr>
+    <div class="wrapper">
+        {% if result_list.has_other_pages %}
+        <ul class="pagination" style="display: flex; justify-content: center;">
+            {% if result_list.has_previous %}
+            <li>
+                <a href="?page={{ result_list.previous_page_number }}">
+                    <button class="btn btn-outline-dark"
+                            style="border-top-left-radius:5px;border-bottom-left-radius:5px;">&laquo;
+                    </button>
+                </a>
+            </li>
+            {% else %}
+            <li class="btn btn-outline-dark disabled" style="border-top-left-radius:5px;border-bottom-left-radius:5px;">
+                <span>&laquo;</span></li>
+            {% endif %}
 
-
-    <div class="pagination" style="text-align:center; margin:auto;">
-    <span class="step-links" style="text-align:center; margin:auto;">
-      <ul class="pagination pagination-lg">
-        {% if allcars.has_previous %}
-            <li><a class="btn" style="font-size:20px" href="?page=1">&laquo; first&nbsp</a></li>
-            <li><a class="btn" style="font-size:20px" href="?page={{ contract.previous_page_number }}">previous</a></li>
-        {% endif %}
-
-
-      {% for pg in allcars.paginator.page_range %}
-        {% if blogs.number == pg %}
-          <li><a style="font-size:20px" href="?page={{pg}}" class="btn btn-default">{{pg}}</a></li>
-        {% else %}
-          <li><a style="font-size:20px" href="?page={{pg}}" class="btn">{{pg}}</a></li>
-        {% endif %}
-      {% endfor %}
-
-
-        {% if allcars.has_next %}
-            <li><a class="btn" style="font-size:20px" href="?page={{ contract.next_page_number }}">next&nbsp</a></li>
-            <li><a class="btn" style="font-size:20px"
-                   href="?page={{ contract.paginator.num_pages }}">last &raquo;</a></li>
-        {% endif %}
+            {% if result_list.number > 2 %}
+            <li><a href="?page={{ 1 }}">
+                <button class="btn btn-outline-dark"> 1</button>
+            </a></li>
+            <li><span><button class="btn btn-outline-dark">...<span class="sr-only">...</span></button></span></li>
+            {% endif %}
+            {% for i in page_range %}
+            {% if result_list.number == i %}
+            <li class="btn btn-outline-dark active"><span>{{ i }}<span class="sr-only">(current)</span></span></li>
+            {% else %}
+            <li><a href="?page={{ i }}">
+                <button class="btn btn-outline-dark">{{ i }}</button>
+            </a></li>
+            {% endif %}
+            {% endfor %}
+            {% if result_list.number < max_index %}
+            <li><span><button class="btn btn-outline-dark">...<span class="sr-only">...</span></button></span></li>
+            <li><a href="?page={{ max_index|add:'2' }}">
+                <button class="btn btn-outline-dark">{{ max_index|add:"2" }}</button>
+            </a>
+            </li>
+            {% endif %}
+            {% if result_list.has_next %}
+            <li>
+                <a href="?page={{ result_list.next_page_number }}">
+                    <button class="btn btn-outline-dark"
+                            style="border-top-right-radius:5px;border-bottom-right-radius:5px;">&raquo;
+                    </button>
+                </a>
+            </li>
+            {% else %}
+            <li>
+                <span><button class="btn btn-outline-dark disabled"
+                              style="border-top-right-radius:5px;border-bottom-right-radius:5px;">&raquo;</button></span>
+            </li>
+            {%endif %}
         </ul>
-    </span>
+        {%endif%}
     </div>
-<hr>
-
 </div>
 <hr>
 <!-- Footer -->

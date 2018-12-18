@@ -1,6 +1,6 @@
 import os
 
-from django.core.paginator import Paginator
+from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.http import JsonResponse, HttpResponse
 from django.shortcuts import render, redirect
 from django.utils import timezone
@@ -77,17 +77,65 @@ def marketsearch(request):
     try:
         search = request.POST['vehiclesearch']
 
-        sellcar = Sellcar.objects.filter(modelname=search).order_by('-id')
-        n = len(sellcar)
-        paginator = Paginator(sellcar, 10)
-        page = request.GET.get('page')
-        searchcars = paginator.get_page(page)
+        all = Sellcar.objects.filter(modelname=search).order_by('-id')
+        total_len = len(all)
+        page = request.GET.get('page', 1)
+        paginator = Paginator(all, 10)
 
-        return render(request, 'app/marketsearch.html', {'searchcars': searchcars, 'n': n})
+        try:
+            lines = paginator.page(page)
+        except PageNotAnInteger:
+            lines = paginator.page(1)
+        except EmptyPage:
+            lines = paginator.page(paginator.num_pages)
+        index = lines.number - 1
+        max_index = len(paginator.page_range)
+        start_index = index - 2 if index >= 2 else 0
+        if index < 2:
+            end_index = 3 - start_index
+        else:
+            end_index = index + 3 if index <= max_index - 3 else max_index
+        page_range = list(paginator.page_range[start_index:end_index])
+
+        allcars = {'result_list': lines, 'page_range': page_range, 'total_len': total_len, 'max_index': max_index - 2}
+
+        return render(request, 'app/marketsearch.html', allcars)
 
     except Exception as e:
         print(e)
         return redirect('marketlogin')
+
+
+def allvehicles(request):
+    try:
+        url = ("http://45.32.103.121:8001/all")
+        res = requests.get(url)
+        all = res.json()
+        total_len = len(all)
+        page = request.GET.get('page',1)
+        paginator = Paginator(all, 50)
+
+        try:
+            lines = paginator.page(page)
+        except PageNotAnInteger:
+            lines = paginator.page(1)
+        except EmptyPage:
+            lines = paginator.page(paginator.num_pages)
+        index = lines.number -1
+        max_index = len(paginator.page_range)
+        start_index = index -2 if index >=2 else 0
+        if index < 2:
+            end_index = 3-start_index
+        else:
+            end_index = index+3 if index <= max_index -3 else max_index
+        page_range = list(paginator.page_range[start_index:end_index])
+
+        allcars = {'result_list':lines,'page_range':page_range,'total_len':total_len,'max_index':max_index-2}
+
+        return render(request, 'app/allvehicles.html', allcars)
+    except Exception as e:
+        print(e)
+        return ('index')
 
 
 def search(request):
@@ -125,13 +173,29 @@ def market(request):
 
         else:
             templates = 'app/market.html'
-            sellcars = Sellcar.objects.all().order_by('-id')
-            n = len(sellcars)
-            paginator = Paginator(sellcars, 10)
-            page = request.GET.get('page')
-            allcars = paginator.get_page(page)
+            all = Sellcar.objects.all().order_by('-id')
+            total_len = len(all)
+            page = request.GET.get('page', 1)
+            paginator = Paginator(all, 10)
 
-        return render(request, templates, {'allcars': allcars, 'n': n, 'uesr_id': user_id})
+            try:
+                lines = paginator.page(page)
+            except PageNotAnInteger:
+                lines = paginator.page(1)
+            except EmptyPage:
+                lines = paginator.page(paginator.num_pages)
+            index = lines.number - 1
+            max_index = len(paginator.page_range)
+            start_index = index - 2 if index >= 2 else 0
+            if index < 2:
+                end_index = 3 - start_index
+            else:
+                end_index = index + 3 if index <= max_index - 3 else max_index
+            page_range = list(paginator.page_range[start_index:end_index])
+
+            allcars = {'result_list': lines, 'page_range': page_range, 'total_len': total_len,
+                       'max_index': max_index - 2}
+        return render(request, templates, allcars)
 
     except Exception as e:
         print(e)
