@@ -28,9 +28,15 @@
 <style>
   @media (max-width:768px){ #white{display:none!important;}}
   @media (min-width:992px){ #black{display:none!important;}}
-  label{border-top-left-radius:5px;border-bottom-left-radius:5px; border:0px!important; width:80px;}
-  .input-group{padding-left:32%;}
-   #serial{display:none;}
+  tr:nth-child(even) {background-color: #f8f9fa;}
+  td, th {  border: 1px solid #dee2e6; vertical-align:middle!important; }
+  h2{padding-left:20px;}
+
+#wrapper {
+  display: flex;
+  justify-content: center;
+}
+
 
 
 
@@ -76,96 +82,90 @@
 
 <!-- Page Header -->
 <header class="masthead"
-        style="background-image: url('../../../static/app/img/market.jpg');background-size:cover; background-repeat:no-repeat;">
+        style="background-image: url('../../static/app/img/allcars.jpg');background-size:cover; background-repeat:no-repeat;">
     <div class="overlay"></div>
     <div class="container">
         <div class="row">
-            <div class="col-lg-8 col-md-10 mx-auto">
+            <div class="col-lg-10 col-md-10 mx-auto">
                 <div class="site-heading">
-                    <h1>Vehicle Market</h1>
-                    <span class="subheading" style="font-size:40px;">Buy and Sell Vehicles</span>
+                    <h1>All Vehicles</h1>
+                    <span class="subheading" style="font-size:40px;">From Blockchain</span>
                 </div>
             </div>
         </div>
     </div>
 </header>
-
-<!-- Main Content -->
 <div class="container">
     <div class="col-12" style="text-align:center;">
         <div class="btn-group">
-            <a href="{%url 'market'%}">
+            <a href="{%url 'government_record'%}">
+                <button type="button" class="btn btn-outline-dark">Record Transfer</button>
+            </a>
+            <a href="{%url 'allvehicles'%}">
                 <button type="button" class="btn btn-outline-dark">All Vehicles</button>
             </a>
-            <a href="{%url 'mytrade'%}">
-                <button type="button" class="btn btn-outline-dark">My Trade</button>
-            </a>
-            <a href="{%url 'registervehicle'%}">
-                <button type="button" class="btn btn-outline-dark">Register Vehicle</button>
-            </a>
-            <a href="{%url 'mypage'%}">
-                <button type="button" class="btn btn-outline-dark">My Page</button>
-            </a>
+
         </div>
-        <hr>
-        <form method="post" action="{% url 'marketsearch'%}">
+
+    </div>
+
+</div>
+<!-- Main Content -->
+<div class="wrapper">
+    <div style="padding-left:20px; padding-right:10px;">
+        <h2></h2>
+        <form method="post" action="{% url 'search'%}">
             <div class="row">
-                <div class="input-group">
-                    <label class="input-group-text" for="vehiclesearch">Model</label>
-                    <input id="vehiclesearch" name="vehiclesearch" class="formcontrol" type="text" name="vehicleseach">
-                    <span class="input-group-append">
-                    <button class="btn btn-outline-dark" type="submit"
-                            style="border-top-right-radius:5px;border-bottom-right-radius:5px;"
-                            id="search">Search</button>
-                </span>
+                <div class="col-6 mx-auto">
+                    <hr>
+                    <div class="input-group">
+                        <label style="border-top-left-radius:5px;border-bottom-left-radius:5px; border:0px!important;"
+                               class="input-group-text">S/N</label>
+                        <input class="form-control" id="serial" name="sn">
+                        <div class="input-group-append">
+                            <button style="border-top-right-radius:5px;border-bottom-right-radius:5px;" type="submit"
+                                    class="btn btn-outline-dark btn-block">Search
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div>
             {% csrf_token%}
         </form>
         <hr>
+        <div class="col-sm-12">
+            <table id="query_trade" class="table" style="text-align:center;">
+
+                <tr>
+                    <th>Serial Number</th>
+                    <th>Manufacture</th>
+                    <th>Factory</th>
+                    <th>Vehicle Name</th>
+                    <th>Type</th>
+                    <th>Exhaust Volume</th>
+                    <th>Fuel</th>
+                </tr>
+
+
+                <tr style="word-break:break-all">
+                    {% for c in result_list %}
+                    <td>{{c.Key}}</td>
+                    <td>{{c.Record.manufacture}}</td>
+                    <td>{{c.Record.factory}}</td>
+                    <td>{{c.Record.name}}</td>
+                    <td>{{c.Record.vehicletype}}</td>
+                    <td>{{c.Record.volume}}</td>
+                    <td>{{c.Record.fuel}}</td>
+
+                </tr>
+                {%endfor%}
+            </table>
+
+        </div>
+        <hr>
     </div>
 
-
-    {% for car in result_list%}
-    <form method="post" action="{% url 'search'%}">
-        <div class="row">
-            <div class="col-sm-12">
-                <input id="serial" name="sn" value="{{car.serialnumber}}">
-                <table class="table" style="text-align:center;">
-                    <tr>
-                        <th>S/N</th>
-                        <th>Brand</th>
-                        <th>Model</th>
-                        <th>Type</th>
-                        <th>Date of manufacture</th>
-                        <th>SellPrice</th>
-                        <th>Owner</th>
-                    </tr>
-                    <tr>
-                        <td>{{car.serialnumber}}</td>
-                        <td>{{car.company}}</td>
-                        <td>{{car.modelname}}</td>
-                        <td>{{car.type}}</td>
-                        <td>{{car.whentobuy}}</td>
-                        <td>{{car.sellprice}}</td>
-                        <td>{{car.owner}}</td>
-                    </tr>
-
-                </table>
-                <hr>
-                <div style="text-align:center;">
-                    <button id="details" type="submit" class="btn btn-outline-dark">Details</button>
-                    <button id="buy" type="submit" formaction="{% url 'marketform'%}" class="btn btn-outline-dark">Buy
-                        Now
-                    </button>
-                </div>
-                <hr>
-            </div>
-        </div>
-        {% csrf_token %}
-    </form>
-    {% endfor %}
-
+    <!-- Pager -->
 
     <div class="wrapper">
         {% if result_list.has_other_pages %}
@@ -222,7 +222,6 @@
         </ul>
         {%endif%}
     </div>
-    <hr>
 
 </div>
 <hr>
@@ -246,7 +245,5 @@
 <script src="{% static 'app/js/clean-blog.min.js'%}"></script>
 
 </body>
-<script>
 
-</script>
 </html>

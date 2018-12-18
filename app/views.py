@@ -9,10 +9,12 @@ from app.models import Manufacture, Government, Repairshop, Insurance, Sellcar, 
 from carinfo import settings
 import pyotp
 import time
+import json
 
 
 def mypage(request):
-    return render(request, 'app/mypage.html',{})
+    return render(request, 'app/mypage.html', {})
+
 
 def makeotp(request):
     if request.method == 'GET':
@@ -20,17 +22,17 @@ def makeotp(request):
     else:
         try:
             user_id = request.session['user_id']
-            otpkey =pyotp.random_base32()
+            otpkey = pyotp.random_base32()
             otpsave = Market.objects.get(user_id=user_id)
-            if  Market.objects.filter(user_id=user_id).values('otp')[0]['otp'] == '':
+            if Market.objects.filter(user_id=user_id).values('otp')[0]['otp'] == '':
                 otpsave.otp = otpkey
                 otpsave.save()
                 data = pyotp.totp.TOTP(otpkey).provisioning_uri(user_id, issuer_name="Vehicle App")
 
-                return render(request, 'app/mypage.html', {'otpkey': otpkey, 'user_id': user_id, 'data':data})
+                return render(request, 'app/mypage.html', {'otpkey': otpkey, 'user_id': user_id, 'data': data})
             else:
                 message = "Already Issued"
-                return render(request, 'app/mypage.html',{'message':message})
+                return render(request, 'app/mypage.html', {'message': message})
         except Exception as e:
             print(e)
             return redirect('market')
@@ -79,7 +81,7 @@ def marketsearch(request):
 
         all = Sellcar.objects.filter(modelname=search).order_by('-id')
         total_len = len(all)
-        page = request.GET.get('page', 1)
+        page = request.GET.get('page')
         paginator = Paginator(all, 10)
 
         try:
@@ -112,8 +114,8 @@ def allvehicles(request):
         res = requests.get(url)
         all = res.json()
         total_len = len(all)
-        page = request.GET.get('page',1)
-        paginator = Paginator(all, 50)
+        page = request.GET.get('page')
+        paginator = Paginator(all, 100)
 
         try:
             lines = paginator.page(page)
@@ -121,16 +123,16 @@ def allvehicles(request):
             lines = paginator.page(1)
         except EmptyPage:
             lines = paginator.page(paginator.num_pages)
-        index = lines.number -1
+        index = lines.number - 1
         max_index = len(paginator.page_range)
-        start_index = index -2 if index >=2 else 0
+        start_index = index - 2 if index >= 2 else 0
         if index < 2:
-            end_index = 3-start_index
+            end_index = 3 - start_index
         else:
-            end_index = index+3 if index <= max_index -3 else max_index
+            end_index = index + 3 if index <= max_index - 3 else max_index
         page_range = list(paginator.page_range[start_index:end_index])
 
-        allcars = {'result_list':lines,'page_range':page_range,'total_len':total_len,'max_index':max_index-2}
+        allcars = {'result_list': lines, 'page_range': page_range, 'total_len': total_len, 'max_index': max_index - 2}
 
         return render(request, 'app/allvehicles.html', allcars)
     except Exception as e:
@@ -146,7 +148,7 @@ def search(request):
         history = res.json()
         if len(history) == 0:
             message = "Invalid S/N"
-            return render(request, 'app/index.html',{'message':message})
+            return render(request, 'app/index.html', {'message': message})
         else:
 
             init = history[0]
@@ -175,7 +177,7 @@ def market(request):
             templates = 'app/market.html'
             all = Sellcar.objects.all().order_by('-id')
             total_len = len(all)
-            page = request.GET.get('page', 1)
+            page = request.GET.get('page')
             paginator = Paginator(all, 10)
 
             try:
@@ -250,6 +252,7 @@ def marketregister(request):
                 result_dict['result'] = 'success'
         return JsonResponse(result_dict)
 
+
 def modify(request):
     if request.method == 'GET':
         return render(request, 'app/maypage.html', {})
@@ -269,7 +272,7 @@ def modify(request):
                 market.address = address
                 market.save()
                 alret = "Success"
-                return render(request,'app/mypage.html',{'alret':alret})
+                return render(request, 'app/mypage.html', {'alret': alret})
             else:
                 alret = "Fail"
                 return render(request, 'app/mypage.html', {'alret': alret})
@@ -388,6 +391,7 @@ def register(request):
     except Exception as e:
         print(e)
         return redirect('registervehicle')
+
 
 def manufacture(request):
     if request.method == 'GET':

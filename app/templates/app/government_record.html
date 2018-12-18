@@ -30,6 +30,7 @@
   @media (min-width:992px){ #black{display:none!important;}}
   label{width:140px;border-top-left-radius:5px;border-bottom-left-radius:5px; border:0px!important;}
 
+
 </style>
 <body>
 
@@ -86,12 +87,28 @@
     </div>
 </header>
 
+<div class="container">
+    <div class="col-12" style="text-align:center;">
+        <div class="btn-group">
+            <a href="{%url 'government_record'%}">
+                <button type="button" class="btn btn-outline-dark">Record Transfer</button>
+            </a>
+            <a href="{%url 'allvehicles'%}">
+                <button type="button" class="btn btn-outline-dark">All Vehicles</button>
+            </a>
+
+        </div>
+
+    </div>
+
+</div>
 <!-- Main Content -->
 <form>
     <div class="container">
         <div class="row">
             <div class="col-lg-8 col-md-10 mx-auto">
-                <h1>Change VEHICLE HISTORY</h1>
+                <hr>
+                <h1>Record VEHICLE HISTORY</h1>
             </div>
         </div>
         <div class="row">
@@ -199,6 +216,7 @@
     })
     return false
   })
+
 
 </script>
 </html>
