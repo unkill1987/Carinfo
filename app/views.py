@@ -43,8 +43,8 @@ def marketform(request):
         buyer = request.session['user_id']
         buyerrrn = Market.objects.filter(user_id=buyer).values('residentnum')[0]['residentnum'][:8] + '*' * 6
         sn = request.POST['sn']
-        url = ("http://45.32.103.121:8001/history/%s" % sn)
-        res = requests.get(url)
+        url = ("http://192.168.0.30:8001/history/%s" % sn)
+        res = requests.post(url)
         history = res.json()
         init = history[0]
         info = Sellcar.objects.filter(serialnumber=sn)
@@ -62,8 +62,8 @@ def marketdetails(request):
     try:
 
         sn = request.POST['serial']
-        url = ("http://45.32.103.121:8001/history/%s" % sn)
-        res = requests.get(url)
+        url = ("http://192.168.0.30:8001/history/%s" % sn)
+        res = requests.post(url)
         history = res.json()
         init = history[0]
         history.pop(0)
@@ -110,8 +110,8 @@ def marketsearch(request):
 
 def allvehicles(request):
     try:
-        url = ("http://45.32.103.121:8001/all")
-        res = requests.get(url)
+        url = ("http://192.168.0.30:8001/all")
+        res = requests.post(url)
         all = res.json()
         total_len = len(all)
         page = request.GET.get('page')
@@ -143,8 +143,8 @@ def allvehicles(request):
 def search(request):
     try:
         sn = str(request.POST['sn'])
-        url = ("http://45.32.103.121:8001/history/%s" % sn)
-        res = requests.get(url)
+        url = ("http://192.168.0.30:8001/history/%s" % sn)
+        res = requests.post(url)
         history = res.json()
         if len(history) == 0:
             message = "Invalid S/N"
@@ -235,18 +235,33 @@ def marketregister(request):
         User_id = request.POST['user_id']
         PW = request.POST['passwd']
         CPW = request.POST['confirm']
-        RRN = request.POST['residentnum']
+        BIRTH = request.POST['birth']
+        RRN = request.POST['rrn']
+        residentnum = BIRTH+'-'+RRN
+        alluser = Market.objects.all()
+        list=[]
+        for i in range(0,len(alluser)):
+            a = alluser.values('residentnum')[i]['residentnum']
+            list.append(a)
 
         if PW != CPW:
             result_dict['result'] = 'Password does not match'
             return JsonResponse(result_dict)
+        elif Name == '' or Address == '' or User_id == '' or PW == '' or BIRTH == '' or RRN == '':
+            result_dict['result'] = 'Please pill out the form'
+            return JsonResponse(result_dict)
+        elif residentnum in list:
+            result_dict['result'] = 'Resident Number cannot be used'
+            return JsonResponse(result_dict)
+
         else:
             try:
                 Market.objects.get(user_id=User_id)
                 result_dict['result'] = 'ID cannot be used'
+
             except Market.DoesNotExist:
-                market = Market(name=Name, address=Address, user_id=User_id, passwd=PW, passconfirm=CPW,
-                                residentnum=RRN)
+
+                market = Market(name=Name, address=Address, user_id=User_id, passwd=PW, passconfirm=CPW, residentnum=residentnum)
                 market.c_date = timezone.now()
                 market.save()
                 result_dict['result'] = 'success'
@@ -323,71 +338,78 @@ def remove(request):
 def register(request):
     try:
         user_id = request.session['user_id']
-        user_name = request.session['name']
         sn = request.POST['sn']
         otp = request.POST['otp']
-        url = ("http://45.32.103.121:8001/history/%s" % sn)
-        res = requests.get(url)
-        history = res.json()
-        init = history[0]
-        Time = init['Timestamp']
-        Model = init['Value']['name']
-        Company = init['Value']['manufacture']
-        Type = init['Value']['vehicletype']
-        Volume = init['Value']['volume']
-        Fuel = init['Value']['fuel']
         Sellprice = request.POST['sellprice']
         Details = request.POST['details']
-
-        currentowner = []
-        for i in range(0, len(history)):
-            owner = history[i]['Value']['owner']
-            if owner == '':
-                pass
-            else:
-                currentowner.append(owner)
-                set(currentowner)
-                seller = currentowner[-1]
-
-        serial = []
-        for i in Sellcar.objects.all():
-            num = i.serialnumber
-            serial.append(num)
-
-        currentplate = []
-        for i in range(0, len(history)):
-            plate = history[i]['Value']['plate']
-            if plate == '':
-                pass
-            else:
-                currentplate.append(plate)
-                set(currentplate)
-                p = currentplate[-1]
-
         result_dict = {}
-
-        otpkey = Market.objects.filter(user_id=user_id).values('otp')[0]['otp']
-        totp = pyotp.TOTP(otpkey)
-        nowotp = totp.now()
-        if otp == nowotp:
-            try:
-                if sn not in serial and seller == user_name:
-                    sellcar = Sellcar(serialnumber=sn, company=Company, modelname=Model, type=Type, volume=Volume,
-                                      fuel=Fuel, owner=user_id, whentobuy=Time, sellprice=Sellprice, details=Details,
-                                      plate=p)
-                    sellcar.save()
-                    result_dict['result'] = 'Success'
-                    return JsonResponse(result_dict)
-                else:
-                    result_dict['result'] = 'Make sure your car is right'
-                    return JsonResponse(result_dict)
-            except Exception as e:
-                print(e)
-                result_dict['result'] = 'Fail'
-                return JsonResponse(result_dict)
-        else:
-            result_dict['result'] = 'OTP Authentication Failed'
+        if sn =='' or Sellprice == '':
+            result_dict['result'] = "Please pill out the form"
             return JsonResponse(result_dict)
+        else:
+            residentnum = Market.objects.filter(user_id=user_id).values('residentnum')[0]['residentnum']
+            rrn=residentnum[:6]+residentnum[7:]
+            url = ("http://192.168.0.30:8001/history/%s" % sn)
+            res = requests.post(url)
+            history = res.json()
+            init = history[0]
+            Time = init['Timestamp']
+            Model = init['Value']['name']
+            Company = init['Value']['manufacture']
+            Type = init['Value']['vehicletype']
+            Volume = init['Value']['volume']
+            Fuel = init['Value']['fuel']
+
+
+            currentrrn = []
+            for i in range(0, len(history)):
+                owner = history[i]['Value']['rrnum']
+                if owner == '':
+                    pass
+                else:
+                    currentrrn.append(owner)
+                    set(currentrrn)
+                    seller = currentrrn[-1]
+
+            serial = []
+            for i in Sellcar.objects.all():
+                num = i.serialnumber
+                serial.append(num)
+
+            currentplate = []
+            for i in range(0, len(history)):
+                plate = history[i]['Value']['plate']
+                if plate == '':
+                    pass
+                else:
+                    currentplate.append(plate)
+                    set(currentplate)
+                    p = currentplate[-1]
+
+
+
+            otpkey = Market.objects.filter(user_id=user_id).values('otp')[0]['otp']
+            totp = pyotp.TOTP(otpkey)
+            nowotp = totp.now()
+            if otp == nowotp:
+                try:
+                    if sn not in serial and seller == rrn:
+                        sellcar = Sellcar(serialnumber=sn, company=Company, modelname=Model, type=Type, volume=Volume,
+                                          fuel=Fuel, owner=user_id, whentobuy=Time, sellprice=Sellprice, details=Details,
+                                          plate=p)
+                        sellcar.save()
+                        result_dict['result'] = 'Success'
+                        return JsonResponse(result_dict)
+                    else:
+                        result_dict['result'] = 'Make sure your car is right'
+                        return JsonResponse(result_dict)
+                except Exception as e:
+                    print(e)
+                    result_dict['result'] = 'Fail'
+                    return JsonResponse(result_dict)
+            else:
+                result_dict['result'] = 'OTP Authentication Failed'
+                return JsonResponse(result_dict)
     except Exception as e:
         print(e)
         return redirect('registervehicle')
@@ -544,17 +566,21 @@ def recordcarinfo(request):
     type = request.POST['type']
     volume = request.POST['volume']
     fuel = request.POST['fuel']
-
-    url = 'http://45.32.103.121:8001/init_car/' + sn + '-' + manufacture + '-' + factory + '-' + name + '-' + type + '-' + volume + '-' + fuel
-    response = requests.get(url)
-    res = response.text
-
     result_dict = {}
-    if (res == "The contract already exists"):
-        result_dict['result'] = 'Already exists Vehicle'
+    if sn == '' or factory =='' or name == '' or type == '' or volume == '' or fuel == '':
+        result_dict['result'] ="Please pill out the form"
+        return JsonResponse(result_dict)
+
     else:
-        result_dict['result'] = 'success'
-    return JsonResponse(result_dict)
+        url = 'http://192.168.0.30:8001/init_car/' + sn + '-' + manufacture + '-' + factory + '-' + name + '-' + type + '-' + volume + '-' + fuel
+        response = requests.post(url)
+        res = response.text
+
+        if (res == "The contract already exists"):
+            result_dict['result'] = 'Already exists Vehicle'
+        else:
+            result_dict['result'] = 'success'
+        return JsonResponse(result_dict)
 
 
 def recordcarchange(request):
@@ -562,19 +588,24 @@ def recordcarchange(request):
     sn = request.POST['sn']
     plate = request.POST['plate']
     owner = request.POST['owner']
+    birth = request.POST['birth']
+    rrn = request.POST['rrn']
     tradehistory = request.POST['tradehistory']
     price = request.POST['price']
-
-    url = 'http://45.32.103.121:8001/change_car/' + sn + '-' + government + '-' + plate + '-' + owner + '-' + tradehistory + '-' + price
-    response = requests.get(url)
-    res = response.text
-
     result_dict = {}
-    if (res == "Could not found contract_id"):
-        result_dict['result'] = 'Check S/N of Vehicle'
+    if sn == '' or plate == '' or owner == '' or birth == '' or rrn == '' or tradehistory =='' or price == '':
+        result_dict['result'] = "Please pill out the form"
+        return JsonResponse(result_dict)
+
     else:
-        result_dict['result'] = 'success'
-    return JsonResponse(result_dict)
+        url = 'http://192.168.0.30:8001/change_car/' + sn + '-' + government + '-' + plate + '-' + owner + '-' + birth + rrn + '-' + tradehistory + '-' + price
+        response = requests.post(url)
+        res = response.text
+        if (res == "Could not found contract_id"):
+            result_dict['result'] = 'Check S/N of Vehicle'
+        else:
+            result_dict['result'] = 'success'
+        return JsonResponse(result_dict)
 
 
 def recordcarrepair(request):
@@ -582,17 +613,20 @@ def recordcarrepair(request):
     sn = request.POST['sn']
     repair = request.POST['repair']
     repairprice = request.POST['repairprice']
-
-    url = 'http://45.32.103.121:8001/repair_car/' + sn + '-' + repair + '-' + repairprice + '-' + shop
-    response = requests.get(url)
-    res = response.text
-
     result_dict = {}
-    if (res == "Could not found contract_id"):
-        result_dict['result'] = 'Check S/N of Vehicle'
+    if sn == '' or repair == '' or repairprice == '':
+        result_dict['result'] = "Please pill out the form"
+        return JsonResponse(result_dict)
+
     else:
-        result_dict['result'] = 'success'
-    return JsonResponse(result_dict)
+        url = 'http://192.168.0.30:8001/repair_car/' + sn + '-' + repair + '-' + repairprice + '-' + shop
+        response = requests.post(url)
+        res = response.text
+        if (res == "Could not found contract_id"):
+            result_dict['result'] = 'Check S/N of Vehicle'
+        else:
+            result_dict['result'] = 'success'
+        return JsonResponse(result_dict)
 
 
 def recordcaraccident(request):
@@ -600,17 +634,21 @@ def recordcaraccident(request):
     sn = request.POST['sn']
     accident = request.POST['accident']
     costs = request.POST['costs']
-
-    url = 'http://45.32.103.121:8001/accident_car/' + sn + '-' + accident + '-' + costs + '-' + insurance
-    response = requests.get(url)
-    res = response.text
-
     result_dict = {}
-    if (res == "Could not found contract_id"):
-        result_dict['result'] = 'Check S/N of Vehicle'
+    if sn == '' or accident == '' or costs == '':
+        result_dict['result'] = "Please pill out the form"
+        return JsonResponse(result_dict)
     else:
-        result_dict['result'] = 'success'
-    return JsonResponse(result_dict)
+        url = 'http://192.168.0.30:8001/accident_car/' + sn + '-' + accident + '-' + costs + '-' + insurance
+        response = requests.post(url)
+        res = response.text
+
+        result_dict = {}
+        if (res == "Could not found contract_id"):
+            result_dict['result'] = 'Check S/N of Vehicle'
+        else:
+            result_dict['result'] = 'success'
+        return JsonResponse(result_dict)
 
 
 def logout(request):
