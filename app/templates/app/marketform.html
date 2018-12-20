@@ -13,7 +13,7 @@
 
     <!-- Bootstrap core CSS -->
     <link href="{% static 'app/vendor/bootstrap/css/bootstrap.min.css'%}" rel="stylesheet">
-
+    <link href='https://fonts.googleapis.com/css?family=Bungee' rel='stylesheet'>
     <!-- Custom fonts for this template -->
     <link href="{% static 'app/vendor/fontawesome-free/css/all.min.css'%}" rel="stylesheet" type="text/css">
     <link href='https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet'
@@ -30,7 +30,7 @@
   @media (min-width:992px){ #black{display:none!important;}}
   label{width:140px;border-top-left-radius:5px;border-bottom-left-radius:5px; border:0px!important;}
   tr,td{border:solid;}
-
+ .dropdown-item{font-family:'Bungee';font-size:12px;}
 
 
 
@@ -53,20 +53,22 @@
         <div class="collapse navbar-collapse" id="navbarResponsive">
             <ul class="navbar-nav ml-auto">
                 <li class="nav-item">
+                    <a class="nav-link" href="{% url 'notice' %}">Notice</a>
+                </li>
+                <li class="nav-item">
                     <a class="nav-link" href="{% url 'market' %}">Market</a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'manufacture_record' %}">Manufacture</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'government_record' %}">Government</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'repairshop_record' %}">Repairshop</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'insurance_record' %}">Insuarance</a>
-                </li>
+               <div class="dropdown" style="padding: 2px 20px;">
+                    <button style="font-size: 12px;font-weight: 800;padding:0px; color:white;background-color:#00000000;"
+                            type="button" class="btn dropdown-toggle" data-toggle="dropdown">Record
+                    </button>
+                    <div class="dropdown-menu" >
+                        <a class="dropdown-item" href="{% url 'manufacture_record' %}">Manufacture</a>
+                        <a class="dropdown-item" href="{% url 'government_record' %}">Government</a>
+                        <a class="dropdown-item" href="{% url 'repairshop_record' %}">Repairshop</a>
+                        <a class="dropdown-item" href="{% url 'insurance_record' %}">Insuarance</a>
+                    </div>
+                </div>
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'logout' %}">Logout</a>
                 </li>
@@ -77,14 +79,13 @@
 
 <!-- Page Header -->
 <header class="masthead"
-        style="background-image: url('../../../static/app/img/contract.jpg');background-size:cover; background-repeat:no-repeat;">
+        style="background-image: url('../../../static/app/img/contract.jpg');background-size:cover; background-repeat:no-repeat; height:70px;">
     <div class="overlay"></div>
     <div class="container">
         <div class="row">
             <div class="col-lg-12 col-md-10 mx-auto">
                 <div class="site-heading">
-                    <h1>Make a Form</h1>
-                    <span class="subheading" style="font-size:40px;">Own Your Vehicle</span>
+
                 </div>
             </div>
         </div>
@@ -97,7 +98,7 @@
 
     <div class="col-sm-12">
         {% for i in info %}
-        <table class="table" style="text-align:center;">
+        <table class="table" style="text-align:center; vertical-align:middle;">
             <tr>
                 <th colspan="4">1.Vehicle Information</th>
             </tr>
@@ -217,6 +218,5 @@
 
 </body>
 <script>
-
 </script>
 </html>

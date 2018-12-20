@@ -26,18 +26,12 @@
 
 </head>
 <style>
+  label{border-top-left-radius:5px;border-bottom-left-radius:5px; border:0px!important;}
+  .btn{border-top-right-radius:5px;border-bottom-right-radius:5px;}
   @media (max-width:768px){ #white{display:none!important;}}
   @media (min-width:992px){ #black{display:none!important;}}
-  label{border-top-left-radius:5px;border-bottom-left-radius:5px; border:0px!important; width:80px;}
-  .input-group{padding-left:32%;}
- .dropdown-item{font-family:'Bungee';font-size:12px;}
-
-
-
-
-
-
-
+  .dropdown-item{font-family:'Bungee';font-size:12px; }
+  td{vertical-align:middle!important;}
 
 </style>
 <body>
@@ -62,17 +56,19 @@
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'market' %}">Market</a>
                 </li>
+
                 <div class="dropdown" style="padding: 2px 20px;">
                     <button style="font-size: 12px;font-weight: 800;padding:0px; color:white;background-color:#00000000;"
                             type="button" class="btn dropdown-toggle" data-toggle="dropdown">Record
                     </button>
-                    <div class="dropdown-menu" >
+                    <div class="dropdown-menu">
                         <a class="dropdown-item" href="{% url 'manufacture_record' %}">Manufacture</a>
                         <a class="dropdown-item" href="{% url 'government_record' %}">Government</a>
                         <a class="dropdown-item" href="{% url 'repairshop_record' %}">Repairshop</a>
                         <a class="dropdown-item" href="{% url 'insurance_record' %}">Insuarance</a>
                     </div>
                 </div>
+
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'logout' %}">Logout</a>
                 </li>
@@ -83,14 +79,14 @@
 
 <!-- Page Header -->
 <header class="masthead"
-        style="background-image: url('../../../static/app/img/market.jpg');background-size:cover; background-repeat:no-repeat;">
+        style="background-image: url('../../static/app/img/notice.jpeg');background-size:cover; background-repeat:no-repeat;">
     <div class="overlay"></div>
     <div class="container">
         <div class="row">
-            <div class="col-lg-8 col-md-10 mx-auto">
+            <div class="col-lg-10 col-md-10 mx-auto">
                 <div class="site-heading">
-                    <h1>Vehicle Market</h1>
-                    <span class="subheading" style="font-size:40px;">Buy and Sell Vehicles</span>
+                    <h1>Notice</h1>
+                    <span class="subheading" style="font-size:40px;">Check the Notice</span>
                 </div>
             </div>
         </div>
@@ -99,113 +95,101 @@
 
 <!-- Main Content -->
 <div class="container">
-    <div class="col-12" style="text-align:center;">
-        <div class="btn-group">
-            <a href="{%url 'market'%}">
-                <button type="button" class="btn btn-outline-dark">Market</button>
-            </a>
-            <a href="{%url 'mytrade'%}">
-                <button type="button" class="btn btn-outline-dark">My Trade</button>
-            </a>
-            <a href="{%url 'registervehicle'%}">
-                <button type="button" class="btn btn-outline-dark">Register Vehicle</button>
-            </a>
-        </div>
-        <hr>
-    </div>
+
     <div class="row">
-        <h2>Vehicle Images</h2>
-    </div>
-    <div class="row">
-        <h2>Vehicle Details</h2>
-    </div>
-    <div style="padding-left:20px; padding-right:10px;">
-        <h2>Vehicle Information</h2>
         <div class="col-sm-12">
             <table class="table" style="text-align:center;">
                 <tr>
-                    <th>Manufacture</th>
-                    <th>Factory</th>
-                    <th>Vehicle Name</th>
-                    <th>Type</th>
-                    <th>Exhaust Volume</th>
-                    <th>Fuel</th>
-                    <th>Txid</th>
-                    <th>Time</th>
+                    <th>No.</th>
+                    <th>Title</th>
+                    <th>Date</th>
+                    <th>Details</th>
                 </tr>
-                <tr style="word-break:break-all">
-                    <td>{{init.Value.manufacture}}</td>
-                    <td>{{init.Value.factory}}</td>
-                    <td>{{init.Value.name}}</td>
-                    <td>{{init.Value.vehicletype}}</td>
-                    <td>{{init.Value.volume}}</td>
-                    <td>{{init.Value.fuel}}</td>
-                    <td>{{init.TxId}}</td>
-                    <td>{{init.Timestamp}}</td>
+                {% for notice in result_list%}
+
+                <tr>
+
+                    <td>{{notice.id}}</td>
+                    <td>{{notice.title}}</td>
+                    <td>{{notice.c_date}}</td>
+                    <td>
+                        <button class="btn btn-outline-dark" id="{{notice.id}}" style="border:0px; border-radius:0px;"
+                                onclick="toggleContent(this)">View
+                        </button>
+                    </td>
+
                 </tr>
+
+                <tr>
+                    <td colspan="4"><div name="{{notice.id}}" style="display:none;">
+                        {{notice.content}}<hr></div>
+                    </td>
+                </tr>
+                {% endfor %}
             </table>
-            <hr>
+
         </div>
     </div>
 
-    <div style="padding-left:20px; padding-right:10px;">
-        <h2>Vehicle History From Blockchain</h2>
-        <div class="col-sm-12">
-            <table id="query_trade" class="table" style="text-align:center;">
+    <hr>
+    <div class="wrapper">
+        {% if result_list.has_other_pages %}
+        <ul class="pagination" style="display: flex; justify-content: center;">
+            {% if result_list.has_previous %}
+            <li>
+                <a href="?page={{ result_list.previous_page_number }}">
+                    <button class="btn btn-outline-dark"
+                            style="border-top-left-radius:5px;border-bottom-left-radius:5px;">&laquo;
+                    </button>
+                </a>
+            </li>
+            {% else %}
+            <li class="btn btn-outline-dark disabled" style="border-top-left-radius:5px;border-bottom-left-radius:5px;">
+                <span>&laquo;</span></li>
+            {% endif %}
 
-                <tr>
-                    <th rowspan="2" style="padding-top: 50px;">Time</th>
-
-                    <th colspan="5">Ownership</th>
-                    <th colspan="3">Maintenance</th>
-                    <th colspan="3">Accident</th>
-
-                </tr>
-                <tr>
-                    <th>Government</th>
-                    <th>Plate</th>
-                    <th>Owner</th>
-                    <th>Trade</th>
-                    <th>Price</th>
-
-                    <th>Repair Details</th>
-                    <th>Repair Costs</th>
-                    <th>Repair Shop</th>
-
-                    <th>Accident Details</th>
-                    <th>Handdling Costs</th>
-                    <th>Insurance Company</th>
-
-
-                </tr>
-                {% for c in history %}
-                <tr style="word-break:break-all">
-                    <td>{{c.Timestamp}}</td>
-
-                    <td>{{c.Value.government}}</td>
-                    <td>{{c.Value.plate}}</td>
-                    <td>{{c.Value.owner}}</td>
-                    <td>{{c.Value.tradehistory}}</td>
-                    <td>{{c.Value.price}}</td>
-
-                    <td>{{c.Value.repair}}</td>
-                    <td>{{c.Value.repaircosts}}</td>
-                    <td>{{c.Value.shop}}</td>
-
-                    <td>{{c.Value.accident}}</td>
-                    <td>{{c.Value.handdlingcosts}}</td>
-                    <td>{{c.Value.insurance}}</td>
-
-
-                </tr>
-                {%endfor%}
-            </table>
-            <hr>
-        </div>
+            {% if result_list.number > 2 %}
+            <li><a href="?page={{ 1 }}">
+                <button class="btn btn-outline-dark"> 1</button>
+            </a></li>
+            <li><span><button class="btn btn-outline-dark">...<span class="sr-only">...</span></button></span></li>
+            {% endif %}
+            {% for i in page_range %}
+            {% if result_list.number == i %}
+            <li class="btn btn-outline-dark active"><span>{{ i }}<span class="sr-only">(current)</span></span></li>
+            {% else %}
+            <li><a href="?page={{ i }}">
+                <button class="btn btn-outline-dark">{{ i }}</button>
+            </a></li>
+            {% endif %}
+            {% endfor %}
+            {% if result_list.number < max_index %}
+            <li><span><button class="btn btn-outline-dark">...<span class="sr-only">...</span></button></span></li>
+            <li><a href="?page={{ max_index|add:'2' }}">
+                <button class="btn btn-outline-dark">{{ max_index|add:"2" }}</button>
+            </a>
+            </li>
+            {% endif %}
+            {% if result_list.has_next %}
+            <li>
+                <a href="?page={{ result_list.next_page_number }}">
+                    <button class="btn btn-outline-dark"
+                            style="border-top-right-radius:5px;border-bottom-right-radius:5px;">&raquo;
+                    </button>
+                </a>
+            </li>
+            {% else %}
+            <li>
+                <span><button class="btn btn-outline-dark disabled"
+                              style="border-top-right-radius:5px;border-bottom-right-radius:5px;">&raquo;</button></span>
+            </li>
+            {%endif %}
+        </ul>
+        {%endif%}
     </div>
-
-
 </div>
+
+<!-- Pager -->
 
 
 <hr>
@@ -213,7 +197,7 @@
 <footer>
     <div class="container">
         <div class="row">
-            <div class="col-lg-8 col-md-10 mx-auto">
+            <div class="col-lg-12 col-md-10 mx-auto">
 
                 <p class="copyright text-muted">Copyright &copy; VEHICLE HISTORY 2018</p>
             </div>
@@ -229,5 +213,19 @@
 <script src="{% static 'app/js/clean-blog.min.js'%}"></script>
 
 </body>
+<script>
+function toggleContent(obj) {
+    var id = obj.id;
+    console.log(id)
+    var contentBox = document.getElementsByName(id)[0];
+    console.log(contentBox);
+    if(contentBox.style.display == "inline") {
+    contentBox.style.display = "none";
+    }
+    else {
+    contentBox.style.display = "inline";
+    }
+}
 
+</script>
 </html>

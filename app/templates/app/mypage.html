@@ -13,7 +13,7 @@
 
     <!-- Bootstrap core CSS -->
     <link href="{% static 'app/vendor/bootstrap/css/bootstrap.min.css'%}" rel="stylesheet">
-
+    <link href='https://fonts.googleapis.com/css?family=Bungee' rel='stylesheet'>
     <!-- Custom fonts for this template -->
     <link href="{% static 'app/vendor/fontawesome-free/css/all.min.css'%}" rel="stylesheet" type="text/css">
     <link href='https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet'
@@ -31,10 +31,7 @@
   label{width:120px;border-top-left-radius:5px;border-bottom-left-radius:5px; border:0px!important;}
 h4{color:#ff0018b0;}
 #qrcmess{display:none;}
-
-
-
-
+ .dropdown-item{font-family:'Bungee';font-size:12px;}
 
 
 </style>
@@ -55,20 +52,22 @@ h4{color:#ff0018b0;}
         <div class="collapse navbar-collapse" id="navbarResponsive">
             <ul class="navbar-nav ml-auto">
                 <li class="nav-item">
+                    <a class="nav-link" href="{% url 'notice' %}">Notice</a>
+                </li>
+                <li class="nav-item">
                     <a class="nav-link" href="{% url 'market' %}">Market</a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'manufacture_record' %}">Manufacture</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'government_record' %}">Government</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'repairshop_record' %}">Repairshop</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'insurance_record' %}">Insuarance</a>
-                </li>
+               <div class="dropdown" style="padding: 2px 20px;">
+                    <button style="font-size: 12px;font-weight: 800;padding:0px; color:white;background-color:#00000000;"
+                            type="button" class="btn dropdown-toggle" data-toggle="dropdown">Record
+                    </button>
+                    <div class="dropdown-menu" >
+                        <a class="dropdown-item" href="{% url 'manufacture_record' %}">Manufacture</a>
+                        <a class="dropdown-item" href="{% url 'government_record' %}">Government</a>
+                        <a class="dropdown-item" href="{% url 'repairshop_record' %}">Repairshop</a>
+                        <a class="dropdown-item" href="{% url 'insurance_record' %}">Insuarance</a>
+                    </div>
+                </div>
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'logout' %}">Logout</a>
                 </li>
@@ -172,7 +171,7 @@ h4{color:#ff0018b0;}
 
             </div>
             <h2 style="color:#0062cc;">{{otpkey}}</h2>
-            <input id = "qrcmess" value = "{{data}}">
+            <input rows="5" id = "qrcmess" value = "{{data}}">
             <h2 style="color:#ff0018b0;">{{message}}</h2>
             <div class="col-lg-4 col-md-10 mx-auto">
                 <button  class="btn btn-outline-dark  btn-block" id="generate">Generate QRCode</button>

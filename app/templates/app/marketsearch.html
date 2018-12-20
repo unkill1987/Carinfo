@@ -13,7 +13,7 @@
 
     <!-- Bootstrap core CSS -->
     <link href="{% static 'app/vendor/bootstrap/css/bootstrap.min.css'%}" rel="stylesheet">
-
+    <link href='https://fonts.googleapis.com/css?family=Bungee' rel='stylesheet'>
     <!-- Custom fonts for this template -->
     <link href="{% static 'app/vendor/fontawesome-free/css/all.min.css'%}" rel="stylesheet" type="text/css">
     <link href='https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet'
@@ -31,7 +31,7 @@
   label{border-top-left-radius:5px;border-bottom-left-radius:5px; border:0px!important; width:80px;}
   .input-group{padding-left:32%;}
    #serial{display:none;}
-
+ .dropdown-item{font-family:'Bungee';font-size:12px;}
 
 
 </style>
@@ -52,20 +52,22 @@
         <div class="collapse navbar-collapse" id="navbarResponsive">
             <ul class="navbar-nav ml-auto">
                 <li class="nav-item">
+                    <a class="nav-link" href="{% url 'notice' %}">Notice</a>
+                </li>
+                <li class="nav-item">
                     <a class="nav-link" href="{% url 'market' %}">Market</a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'manufacture_record' %}">Manufacture</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'government_record' %}">Government</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'repairshop_record' %}">Repairshop</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'insurance_record' %}">Insuarance</a>
-                </li>
+               <div class="dropdown" style="padding: 2px 20px;">
+                    <button style="font-size: 12px;font-weight: 800;padding:0px; color:white;background-color:#00000000;"
+                            type="button" class="btn dropdown-toggle" data-toggle="dropdown">Record
+                    </button>
+                    <div class="dropdown-menu" >
+                        <a class="dropdown-item" href="{% url 'manufacture_record' %}">Manufacture</a>
+                        <a class="dropdown-item" href="{% url 'government_record' %}">Government</a>
+                        <a class="dropdown-item" href="{% url 'repairshop_record' %}">Repairshop</a>
+                        <a class="dropdown-item" href="{% url 'insurance_record' %}">Insuarance</a>
+                    </div>
+                </div>
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'logout' %}">Logout</a>
                 </li>

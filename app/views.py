@@ -5,11 +5,42 @@ from django.http import JsonResponse, HttpResponse
 from django.shortcuts import render, redirect
 from django.utils import timezone
 import requests
-from app.models import Manufacture, Government, Repairshop, Insurance, Sellcar, Market
+from app.models import Manufacture, Government, Repairshop, Insurance, Sellcar, Market, Notice
 from carinfo import settings
 import pyotp
 import time
 import json
+
+
+def notice(request):
+    try:
+        all = Notice.objects.all().order_by('-id')
+        total_len = len(all)
+        page = request.GET.get('page')
+        paginator = Paginator(all, 10)
+
+        try:
+            lines = paginator.page(page)
+        except PageNotAnInteger:
+            lines = paginator.page(1)
+        except EmptyPage:
+            lines = paginator.page(paginator.num_pages)
+        index = lines.number - 1
+        max_index = len(paginator.page_range)
+        start_index = index - 2 if index >= 2 else 0
+        if index < 2:
+            end_index = 3 - start_index
+        else:
+            end_index = index + 3 if index <= max_index - 3 else max_index
+        page_range = list(paginator.page_range[start_index:end_index])
+
+        notice = {'result_list': lines, 'page_range': page_range, 'total_len': total_len, 'max_index': max_index - 2}
+
+        return render(request, 'app/notice.html', notice)
+
+    except Exception as e:
+        print(e)
+        return redirect('notice')
 
 
 def mypage(request):
@@ -43,7 +74,7 @@ def marketform(request):
         buyer = request.session['user_id']
         buyerrrn = Market.objects.filter(user_id=buyer).values('residentnum')[0]['residentnum'][:8] + '*' * 6
         sn = request.POST['sn']
-        url = ("http://192.168.0.30:8001/history/%s" % sn)
+        url = ("http://45.32.103.121:8001/history/%s" % sn)
         res = requests.post(url)
         history = res.json()
         init = history[0]
@@ -62,7 +93,7 @@ def marketdetails(request):
     try:
 
         sn = request.POST['serial']
-        url = ("http://192.168.0.30:8001/history/%s" % sn)
+        url = ("http://45.32.103.121:8001/history/%s" % sn)
         res = requests.post(url)
         history = res.json()
         init = history[0]
@@ -110,7 +141,7 @@ def marketsearch(request):
 
 def allvehicles(request):
     try:
-        url = ("http://192.168.0.30:8001/all")
+        url = ("http://45.32.103.121:8001/all")
         res = requests.post(url)
         all = res.json()
         total_len = len(all)
@@ -143,7 +174,7 @@ def allvehicles(request):
 def search(request):
     try:
         sn = str(request.POST['sn'])
-        url = ("http://192.168.0.30:8001/history/%s" % sn)
+        url = ("http://45.32.103.121:8001/history/%s" % sn)
         res = requests.post(url)
         history = res.json()
         if len(history) == 0:
@@ -343,13 +374,13 @@ def register(request):
         Sellprice = request.POST['sellprice']
         Details = request.POST['details']
         result_dict = {}
-        if sn =='' or Sellprice == '':
+        if sn =='' or Sellprice == '' or otp =='':
             result_dict['result'] = "Please pill out the form"
             return JsonResponse(result_dict)
         else:
             residentnum = Market.objects.filter(user_id=user_id).values('residentnum')[0]['residentnum']
             rrn=residentnum[:6]+residentnum[7:]
-            url = ("http://192.168.0.30:8001/history/%s" % sn)
+            url = ("http://45.32.103.121:8001/history/%s" % sn)
             res = requests.post(url)
             history = res.json()
             init = history[0]
@@ -385,8 +416,6 @@ def register(request):
                     currentplate.append(plate)
                     set(currentplate)
                     p = currentplate[-1]
-
-
 
             otpkey = Market.objects.filter(user_id=user_id).values('otp')[0]['otp']
             totp = pyotp.TOTP(otpkey)
@@ -572,7 +601,7 @@ def recordcarinfo(request):
         return JsonResponse(result_dict)
 
     else:
-        url = 'http://192.168.0.30:8001/init_car/' + sn + '-' + manufacture + '-' + factory + '-' + name + '-' + type + '-' + volume + '-' + fuel
+        url = 'http://45.32.103.121:8001/init_car/' + sn + '-' + manufacture + '-' + factory + '-' + name + '-' + type + '-' + volume + '-' + fuel
         response = requests.post(url)
         res = response.text
 
@@ -598,7 +627,7 @@ def recordcarchange(request):
         return JsonResponse(result_dict)
 
     else:
-        url = 'http://192.168.0.30:8001/change_car/' + sn + '-' + government + '-' + plate + '-' + owner + '-' + birth + rrn + '-' + tradehistory + '-' + price
+        url = 'http://45.32.103.121:8001/change_car/' + sn + '-' + government + '-' + plate + '-' + owner + '-' + birth + rrn + '-' + tradehistory + '-' + price
         response = requests.post(url)
         res = response.text
         if (res == "Could not found contract_id"):
@@ -619,7 +648,7 @@ def recordcarrepair(request):
         return JsonResponse(result_dict)
 
     else:
-        url = 'http://192.168.0.30:8001/repair_car/' + sn + '-' + repair + '-' + repairprice + '-' + shop
+        url = 'http://45.32.103.121:8001/repair_car/' + sn + '-' + repair + '-' + repairprice + '-' + shop
         response = requests.post(url)
         res = response.text
         if (res == "Could not found contract_id"):
@@ -639,7 +668,7 @@ def recordcaraccident(request):
         result_dict['result'] = "Please pill out the form"
         return JsonResponse(result_dict)
     else:
-        url = 'http://192.168.0.30:8001/accident_car/' + sn + '-' + accident + '-' + costs + '-' + insurance
+        url = 'http://45.32.103.121:8001/accident_car/' + sn + '-' + accident + '-' + costs + '-' + insurance
         response = requests.post(url)
         res = response.text
 
