@@ -30,6 +30,9 @@
   @media (min-width:992px){ #black{display:none!important;}}
   label{width:140px;border-top-left-radius:5px;border-bottom-left-radius:5px; border:0px!important;}
  .dropdown-item{font-family:'Bungee';font-size:12px;}
+
+
+
 </style>
 <body>
 
@@ -53,11 +56,11 @@
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'market' %}">Market</a>
                 </li>
-               <div class="dropdown" style="padding: 2px 20px;">
+                <div class="dropdown" style="padding: 2px 20px;">
                     <button style="font-size: 12px;font-weight: 800;padding:0px; color:white;background-color:#00000000;"
                             type="button" class="btn dropdown-toggle" data-toggle="dropdown">Record
                     </button>
-                    <div class="dropdown-menu" >
+                    <div class="dropdown-menu">
                         <a class="dropdown-item" href="{% url 'manufacture_record' %}">Manufacture</a>
                         <a class="dropdown-item" href="{% url 'government_record' %}">Government</a>
                         <a class="dropdown-item" href="{% url 'repairshop_record' %}">Repairshop</a>
@@ -89,7 +92,7 @@
 </header>
 
 <!-- Main Content -->
-<form>
+<form id="data" method="post" enctype="multipart/form-data">
     <div class="container">
         <div class="col-12" style="text-align:center;">
             <div class="btn-group">
@@ -103,8 +106,8 @@
                     <button type="button" class="btn btn-outline-dark">Register Vehicle</button>
                 </a>
                 <a href="{%url 'mypage'%}">
-                <button type="button" class="btn btn-outline-dark">My Page</button>
-            </a>
+                    <button type="button" class="btn btn-outline-dark">My Page</button>
+                </a>
             </div>
             <hr>
         </div>
@@ -141,10 +144,19 @@
                     <label class="input-group-text">Details</label>
                     <textarea class="form-control" rows="5" name="details" type="text" required="required"></textarea>
                 </div>
-              </div>
-
+            </div>
         </div>
+        <div style="font-size:5px">&nbsp</div>
 
+        <div class="row">
+            <div class="col-lg-8 col-md-10 mx-auto">
+                <div class="input-group">
+                    <label class="input-group-text" for="upload">Picture</label>
+
+                    <input class="" id="upload" type="file" name="my_file" multiple >
+                </div>
+            </div>
+        </div>
         <div style="font-size:5px">&nbsp</div>
 
         <div class="row">
@@ -160,7 +172,8 @@
 
 
         <div class="col-lg-4 col-md-10 mx-auto">
-            <button id="record" class="btn btn-outline-dark btn-block" style="padding:10px">Register</button>
+            <button class="btn btn-outline-dark btn-block" style="padding:10px">Register
+            </button>
         </div>
     </div>
     {% csrf_token %}
@@ -189,26 +202,31 @@
 
 </body>
 <script>
-   $('#record').click(function(){
-   $('.btn').attr('disabled',true);
+$("form#data").submit(function(e){
+$('.btn').attr('disabled',true);
+    e.preventDefault();
+    var formData = new FormData(this);
     $.ajax({
-      url:'/app/register/',
-      type:'post',
-      data:$('form').serialize(),
-      success: function(res){
+        url:'/app/register/',
+        type:'post',
+        data:formData,
+        success: function(res){
 
         if(res.result == 'success'){
-          alert(res.result)
-          location = '/app/market'
+        alert(res.result)
+        location = '/app/market'
 
         }else{
-          alert(res.result)
-          location = '/app/registervehicle/'
+        alert(res.result)
+        location = '/app/registervehicle/'
         }
-       }
-    })
-    return false
-  })
+       },
+       cache: false,
+        contentType: false,
+        processData: false
+    });
+});
+
 
 </script>
 </html>

@@ -31,6 +31,7 @@
   label{width:120px;border-top-left-radius:5px;border-bottom-left-radius:5px; border:0px!important;}
  .dropdown-item{font-family:'Bungee';font-size:12px;}
 
+
 </style>
 <body>
 
@@ -54,11 +55,11 @@
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'market' %}">Market</a>
                 </li>
-               <div class="dropdown" style="padding: 2px 20px;">
+                <div class="dropdown" style="padding: 2px 20px;">
                     <button style="font-size: 12px;font-weight: 800;padding:0px; color:white;background-color:#00000000;"
                             type="button" class="btn dropdown-toggle" data-toggle="dropdown">Record
                     </button>
-                    <div class="dropdown-menu" >
+                    <div class="dropdown-menu">
                         <a class="dropdown-item" href="{% url 'manufacture_record' %}">Manufacture</a>
                         <a class="dropdown-item" href="{% url 'government_record' %}">Government</a>
                         <a class="dropdown-item" href="{% url 'repairshop_record' %}">Repairshop</a>
@@ -91,7 +92,7 @@
 </header>
 
 <!-- Main Content -->
-<form>
+<form method="post">
     <div class="container">
         <div class="row">
             <div class="col-lg-8 col-md-10 mx-auto">
@@ -102,7 +103,7 @@
             <div class="col-lg-8 col-md-10 mx-auto">
                 <div class="input-group">
                     <label class="input-group-text">NAME</label>
-                    <input class="form-control" id="name" name="name" type="text" required="required">
+                    <input class="form-control" id="name" name="name" type="text" >
 
                 </div>
             </div>
@@ -112,8 +113,11 @@
             <div class="col-lg-8 col-md-10 mx-auto">
                 <div class="input-group">
                     <label class="input-group-text">RRN</label>
-                    <input class="form-control" id="birth" name="birth" type="text" required="required">&nbsp-&nbsp
-                    <input class="form-control" id="residentnum" name="rrn" type="text" required="required">
+                    <input class="form-control" id="birth" name="birth" type="text" >&nbsp-&nbsp
+                    <input class="form-control" id="residentnum" name="rrn" type="text" >
+                    <div class="input-group-append">
+                        <input class="btn btn-dark" type="button" formaction="" style="padding:0px 20px; border-top-right-radius:5px; border-bottom-right-radius:5px" value="Verify">
+                    </div>
                 </div>
             </div>
         </div>
@@ -122,7 +126,7 @@
             <div class="col-lg-8 col-md-10 mx-auto">
                 <div class="input-group">
                     <label class="input-group-text">ADDRESS</label>
-                    <input class="form-control" type="text" name="address" id="address" required="required">
+                    <input class="form-control" type="text" name="address" id="address" >
 
                 </div>
             </div>
@@ -132,7 +136,7 @@
             <div class="col-lg-8 col-md-10 mx-auto">
                 <div class="input-group">
                     <label class="input-group-text">ID</label>
-                    <input class="form-control" type="text" name="user_id" id="user_id" required="required">
+                    <input class="form-control" type="text" name="user_id" id="user_id" >
 
                 </div>
             </div>
@@ -143,7 +147,7 @@
             <div class="col-lg-8 col-md-10 mx-auto">
                 <div class="input-group">
                     <label class="input-group-text">PW</label>
-                    <input class="form-control" type="password" name="passwd" id="passwd" required="required">
+                    <input class="form-control" type="password" name="passwd" id="passwd" >
 
                 </div>
             </div>
@@ -154,7 +158,7 @@
             <div class="col-lg-8 col-md-10 mx-auto">
                 <div class="input-group">
                     <label class="input-group-text">Confirm PW</label>
-                    <input class="form-control" type="password" name="confirm" id="confirm" required="required">
+                    <input class="form-control" type="password" name="confirm" id="confirm" >
 
                 </div>
                 <hr>
@@ -225,6 +229,7 @@ if (event.keyCode === 13) {
 document.getElementById("register").click();
 }
 });
+
 
 
 </script>

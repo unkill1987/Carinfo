@@ -8,6 +8,8 @@ class Notice(models.Model):
     content = models.CharField(max_length=1000)
     c_date = models.DateTimeField(null=True)
 
+    def __str__(self):
+        return self.title
 
 class Sellcar(models.Model):
     serialnumber = models.CharField(max_length=100)
@@ -21,6 +23,9 @@ class Sellcar(models.Model):
     whentobuy = models.CharField(max_length=100)
     sellprice = models.CharField(max_length=100)
     details = models.CharField(max_length=500)
+    file1 = models.CharField(max_length=100)
+    file2 = models.CharField(max_length=100)
+    file3 = models.CharField(max_length=100)
 
 
 class Market(models.Model):

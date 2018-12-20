@@ -268,10 +268,10 @@ def marketregister(request):
         CPW = request.POST['confirm']
         BIRTH = request.POST['birth']
         RRN = request.POST['rrn']
-        residentnum = BIRTH+'-'+RRN
+        residentnum = BIRTH + '-' + RRN
         alluser = Market.objects.all()
-        list=[]
-        for i in range(0,len(alluser)):
+        list = []
+        for i in range(0, len(alluser)):
             a = alluser.values('residentnum')[i]['residentnum']
             list.append(a)
 
@@ -292,7 +292,8 @@ def marketregister(request):
 
             except Market.DoesNotExist:
 
-                market = Market(name=Name, address=Address, user_id=User_id, passwd=PW, passconfirm=CPW, residentnum=residentnum)
+                market = Market(name=Name, address=Address, user_id=User_id, passwd=PW, passconfirm=CPW,
+                                residentnum=residentnum)
                 market.c_date = timezone.now()
                 market.save()
                 result_dict['result'] = 'success'
@@ -374,12 +375,12 @@ def register(request):
         Sellprice = request.POST['sellprice']
         Details = request.POST['details']
         result_dict = {}
-        if sn =='' or Sellprice == '' or otp =='':
+        if sn == '' or Sellprice == '' or otp == '':
             result_dict['result'] = "Please pill out the form"
             return JsonResponse(result_dict)
         else:
             residentnum = Market.objects.filter(user_id=user_id).values('residentnum')[0]['residentnum']
-            rrn=residentnum[:6]+residentnum[7:]
+            rrn = residentnum[:6] + residentnum[7:]
             url = ("http://45.32.103.121:8001/history/%s" % sn)
             res = requests.post(url)
             history = res.json()
@@ -390,7 +391,6 @@ def register(request):
             Type = init['Value']['vehicletype']
             Volume = init['Value']['volume']
             Fuel = init['Value']['fuel']
-
 
             currentrrn = []
             for i in range(0, len(history)):
@@ -415,7 +415,7 @@ def register(request):
                 else:
                     currentplate.append(plate)
                     set(currentplate)
-                    p = currentplate[-1]
+                    plate = currentplate[-1]
 
             otpkey = Market.objects.filter(user_id=user_id).values('otp')[0]['otp']
             totp = pyotp.TOTP(otpkey)
@@ -423,9 +423,37 @@ def register(request):
             if otp == nowotp:
                 try:
                     if sn not in serial and seller == rrn:
+
+                        upload_files = request.FILES.getlist('my_file')
+                        path = ('upload/%s' % user_id)
+
+                        try:
+                            os.mkdir(path)
+                        except FileExistsError as e:
+                            pass
+                        files = []
+                        for upload_file in upload_files:
+                            file_name = upload_file.name
+                            files.append(file_name)
+                            with open(path + '/' + file_name, 'wb') as file:
+                                for chunk in upload_file.chunks():
+                                    file.write(chunk)
+                        if len(files) == 1:
+                            files1 = files[0]
+                            files2 = ''
+                            files3 = ''
+                        elif len(files) == 2:
+                            files1 = files[0]
+                            files2 = files[1]
+                            files3 = ''
+                        else:
+                            files1 = files[0]
+                            files2 = files[1]
+                            files3 = files[2]
+
                         sellcar = Sellcar(serialnumber=sn, company=Company, modelname=Model, type=Type, volume=Volume,
-                                          fuel=Fuel, owner=user_id, whentobuy=Time, sellprice=Sellprice, details=Details,
-                                          plate=p)
+                                          fuel=Fuel, owner=user_id, whentobuy=Time, sellprice=Sellprice,
+                                          details=Details, plate=plate, file1=files1, file2=files2, file3=files3)
                         sellcar.save()
                         result_dict['result'] = 'Success'
                         return JsonResponse(result_dict)
@@ -596,8 +624,8 @@ def recordcarinfo(request):
     volume = request.POST['volume']
     fuel = request.POST['fuel']
     result_dict = {}
-    if sn == '' or factory =='' or name == '' or type == '' or volume == '' or fuel == '':
-        result_dict['result'] ="Please pill out the form"
+    if sn == '' or factory == '' or name == '' or type == '' or volume == '' or fuel == '':
+        result_dict['result'] = "Please pill out the form"
         return JsonResponse(result_dict)
 
     else:
@@ -622,7 +650,7 @@ def recordcarchange(request):
     tradehistory = request.POST['tradehistory']
     price = request.POST['price']
     result_dict = {}
-    if sn == '' or plate == '' or owner == '' or birth == '' or rrn == '' or tradehistory =='' or price == '':
+    if sn == '' or plate == '' or owner == '' or birth == '' or rrn == '' or tradehistory == '' or price == '':
         result_dict['result'] = "Please pill out the form"
         return JsonResponse(result_dict)
 
